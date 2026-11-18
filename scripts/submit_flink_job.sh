@@ -23,9 +23,12 @@ for id in $(gcloud dataproc jobs list --project "$PROJECT_ID" --region "$REGION"
   echo "killing previous job $id"; gcloud dataproc jobs kill "$id" --project "$PROJECT_ID" --region "$REGION" --quiet
 done
 
+# Single-node e2-standard-2: 2 YARN vCores with CPU scheduling on; the JobManager takes 1, so the
+# TaskManager must ask for 1 (default = slots = 2 can never be granted). Parallelism is 1.
 gcloud dataproc jobs submit flink \
   --project "$PROJECT_ID" --region "$REGION" --cluster "$CLUSTER" \
   --jar "gs://${BUCKET}/dataproc/jobs/situation-analytics-flink.jar" \
+  --properties "taskmanager.numberOfTaskSlots=1,yarn.containers.vcores=1" \
   --labels app=s19,component=situation-analytics \
   --async \
   -- --bootstrap 10.10.0.100:9094 \

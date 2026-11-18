@@ -26,8 +26,14 @@ foreach ($id in ($active -split "`n" | Where-Object { $_ })) {
   Write-Host "killing previous job $id"; gcloud dataproc jobs kill $id --project $ProjectId --region $Region --quiet
 }
 
+# The single-node e2-standard-2 cluster has 2 YARN vCores and Dataproc enables CPU scheduling
+# (DominantResourceCalculator). The JobManager takes 1 vCore; by default a TaskManager asks for
+# vCores = slots (2), which can never be granted. Parallelism is 1, so 1 slot / 1 vCore is enough.
+$flinkProps = "taskmanager.numberOfTaskSlots=1,yarn.containers.vcores=1"
+
 gcloud dataproc jobs submit flink --project $ProjectId --region $Region --cluster $Cluster `
   --jar "gs://$bucket/dataproc/jobs/situation-analytics-flink.jar" `
+  --properties $flinkProps `
   --labels "app=s19,component=situation-analytics" --async `
   '--' --bootstrap $KafkaBootstrap --input-topics "incident-events,dispatch-events,consistency-events" `
      --output-topic incident-aggregates --window-seconds 60 `

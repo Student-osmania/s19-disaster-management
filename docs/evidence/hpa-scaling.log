@@ -1,0 +1,601 @@
+# HPA evidence started 2026-11-18T21:21:17Z
+=== 21:21:17 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 3%/50%                    1         5         1          5h5m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 36%/80%   1         5         1          5h5m
+incident-intake      1/1   1     1     5h5m
+quorum-coordinator   1/1   1     1     5h5m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          3m           75Mi            
+quorum-coordinator-f875db486-f8vrs        5m           45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h6m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h6m   v1.36.4-gke.2377000
+
+=== 21:21:40 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 8%/50%                    1         5         1          5h5m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 36%/80%   1         5         1          5h5m
+incident-intake      1/1   1     1     5h5m
+quorum-coordinator   1/1   1     1     5h5m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          6m           75Mi            
+quorum-coordinator-f875db486-f8vrs        9m           45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h6m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h6m   v1.36.4-gke.2377000
+
+=== 21:22:01 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 8%/50%                    1         5         1          5h6m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 36%/80%   1         5         1          5h6m
+incident-intake      1/2   1     1     5h6m
+quorum-coordinator   1/1   1     1     5h6m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          6m           75Mi            
+quorum-coordinator-f875db486-f8vrs        9m           45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h6m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h6m   v1.36.4-gke.2377000
+
+=== 21:22:23 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 59%/50%                    1         5         2          5h6m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 56%/50%, memory: 36%/80%   1         5         2          5h6m
+incident-intake      2/2   2     2     5h6m
+quorum-coordinator   2/2   2     2     5h6m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          49m          75Mi            
+quorum-coordinator-f875db486-f8vrs        45m          45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h7m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h7m   v1.36.4-gke.2377000
+
+=== 21:22:44 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 59%/50%                    1         5         2          5h6m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 56%/50%, memory: 35%/80%   1         5         2          5h6m
+incident-intake      2/2   2     2     5h6m
+quorum-coordinator   2/2   2     2     5h6m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          82m          76Mi            
+incident-intake-58d5bc4889-pvqtg          102m         71Mi            
+quorum-coordinator-f875db486-f8vrs        86m          45Mi            
+quorum-coordinator-f875db486-qthcr        91m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h7m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h7m   v1.36.4-gke.2377000
+
+=== 21:23:07 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 92%/50%                    1         5         4          5h7m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 64%/50%, memory: 35%/80%   1         5         3          5h7m
+incident-intake      2/4   4     2     5h7m
+quorum-coordinator   3/3   3     3     5h7m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          82m          76Mi            
+incident-intake-58d5bc4889-pvqtg          102m         71Mi            
+quorum-coordinator-f875db486-f8vrs        86m          45Mi            
+quorum-coordinator-f875db486-qthcr        91m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h7m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h7m   v1.36.4-gke.2377000
+
+=== 21:23:29 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 92%/50%                    1         5         4          5h7m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 64%/50%, memory: 35%/80%   1         5         3          5h7m
+incident-intake      4/4   4     4     5h7m
+quorum-coordinator   3/3   3     3     5h7m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          84m          76Mi            
+incident-intake-58d5bc4889-pvqtg          105m         75Mi            
+quorum-coordinator-f875db486-f8vrs        125m         45Mi            
+quorum-coordinator-f875db486-qqx4m        85m          44Mi            
+quorum-coordinator-f875db486-qthcr        12m          45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h8m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h8m   v1.36.4-gke.2377000
+
+=== 21:23:51 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 92%/50%                    1         5         4          5h7m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 63%/50%, memory: 35%/80%   1         5         4          5h7m
+incident-intake      4/4   4     4     5h7m
+quorum-coordinator   3/4   4     3     5h8m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          36m          71Mi            
+incident-intake-58d5bc4889-hw49d          85m          76Mi            
+incident-intake-58d5bc4889-lpgsq          49m          74Mi            
+incident-intake-58d5bc4889-pvqtg          90m          75Mi            
+quorum-coordinator-f875db486-f8vrs        117m         45Mi            
+quorum-coordinator-f875db486-qqx4m        24m          45Mi            
+quorum-coordinator-f875db486-qthcr        26m          45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h8m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h8m   v1.36.4-gke.2377000
+
+=== 21:24:13 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 79%/50%                    1         5         5          5h8m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 63%/50%, memory: 35%/80%   1         5         4          5h8m
+incident-intake      5/5   5     5     5h8m
+quorum-coordinator   4/4   4     4     5h8m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          60m          74Mi            
+incident-intake-58d5bc4889-hw49d          62m          76Mi            
+incident-intake-58d5bc4889-ktzqv          122m         71Mi            
+incident-intake-58d5bc4889-lpgsq          77m          74Mi            
+incident-intake-58d5bc4889-pvqtg          69m          75Mi            
+quorum-coordinator-f875db486-f8vrs        100m         45Mi            
+quorum-coordinator-f875db486-jkbhd        126m         44Mi            
+quorum-coordinator-f875db486-qqx4m        40m          45Mi            
+quorum-coordinator-f875db486-qthcr        44m          45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h9m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h9m   v1.36.4-gke.2377000
+
+=== 21:24:36 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 79%/50%                    1         5         5          5h8m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 63%/50%, memory: 35%/80%   1         5         4          5h8m
+incident-intake      5/5   5     5     5h8m
+quorum-coordinator   4/4   4     4     5h8m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          60m          74Mi            
+incident-intake-58d5bc4889-hw49d          62m          76Mi            
+incident-intake-58d5bc4889-ktzqv          122m         71Mi            
+incident-intake-58d5bc4889-lpgsq          77m          74Mi            
+incident-intake-58d5bc4889-pvqtg          69m          75Mi            
+quorum-coordinator-f875db486-f8vrs        100m         45Mi            
+quorum-coordinator-f875db486-jkbhd        126m         44Mi            
+quorum-coordinator-f875db486-qqx4m        40m          45Mi            
+quorum-coordinator-f875db486-qthcr        44m          45Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h9m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h9m   v1.36.4-gke.2377000
+
+=== 21:24:59 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 79%/50%                    1         5         5          5h9m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 47%/50%, memory: 35%/80%   1         5         4          5h9m
+incident-intake      5/5   5     5     5h9m
+quorum-coordinator   4/4   4     4     5h9m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          52m          74Mi            
+incident-intake-58d5bc4889-hw49d          51m          76Mi            
+incident-intake-58d5bc4889-ktzqv          47m          74Mi            
+incident-intake-58d5bc4889-lpgsq          63m          74Mi            
+incident-intake-58d5bc4889-pvqtg          70m          75Mi            
+quorum-coordinator-f875db486-f8vrs        83m          45Mi            
+quorum-coordinator-f875db486-jkbhd        6m           45Mi            
+quorum-coordinator-f875db486-qqx4m        36m          44Mi            
+quorum-coordinator-f875db486-qthcr        55m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h9m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h9m   v1.36.4-gke.2377000
+
+=== 21:25:22 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 53%/50%                    1         5         5          5h9m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 47%/50%, memory: 35%/80%   1         5         4          5h9m
+incident-intake      5/5   5     5     5h9m
+quorum-coordinator   4/4   4     4     5h9m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          49m          74Mi            
+incident-intake-58d5bc4889-hw49d          51m          76Mi            
+incident-intake-58d5bc4889-ktzqv          40m          75Mi            
+incident-intake-58d5bc4889-lpgsq          59m          74Mi            
+incident-intake-58d5bc4889-pvqtg          65m          75Mi            
+quorum-coordinator-f875db486-f8vrs        82m          45Mi            
+quorum-coordinator-f875db486-jkbhd        15m          45Mi            
+quorum-coordinator-f875db486-qqx4m        36m          44Mi            
+quorum-coordinator-f875db486-qthcr        59m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h10m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h10m   v1.36.4-gke.2377000
+
+=== 21:25:45 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 53%/50%                    1         5         5          5h9m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 47%/50%, memory: 35%/80%   1         5         4          5h9m
+incident-intake      5/5   5     5     5h9m
+quorum-coordinator   4/4   4     4     5h9m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          44m          74Mi            
+incident-intake-58d5bc4889-hw49d          47m          76Mi            
+incident-intake-58d5bc4889-ktzqv          50m          75Mi            
+incident-intake-58d5bc4889-lpgsq          64m          75Mi            
+incident-intake-58d5bc4889-pvqtg          59m          75Mi            
+quorum-coordinator-f875db486-f8vrs        78m          45Mi            
+quorum-coordinator-f875db486-jkbhd        10m          45Mi            
+quorum-coordinator-f875db486-qqx4m        39m          44Mi            
+quorum-coordinator-f875db486-qthcr        61m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h10m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h10m   v1.36.4-gke.2377000
+
+=== 21:26:08 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 53%/50%                    1         5         5          5h10m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 45%/50%, memory: 35%/80%   1         5         4          5h10m
+incident-intake      5/5   5     5     5h10m
+quorum-coordinator   4/4   4     4     5h10m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          47m          74Mi            
+incident-intake-58d5bc4889-hw49d          48m          76Mi            
+incident-intake-58d5bc4889-ktzqv          42m          75Mi            
+incident-intake-58d5bc4889-lpgsq          57m          75Mi            
+incident-intake-58d5bc4889-pvqtg          62m          75Mi            
+quorum-coordinator-f875db486-f8vrs        78m          45Mi            
+quorum-coordinator-f875db486-jkbhd        7m           45Mi            
+quorum-coordinator-f875db486-qqx4m        39m          44Mi            
+quorum-coordinator-f875db486-qthcr        58m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h10m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h10m   v1.36.4-gke.2377000
+
+=== 21:26:31 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 49%/50%                    1         5         5          5h10m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 45%/50%, memory: 35%/80%   1         5         4          5h10m
+incident-intake      5/5   5     5     5h10m
+quorum-coordinator   4/4   4     4     5h10m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          47m          74Mi            
+incident-intake-58d5bc4889-hw49d          48m          76Mi            
+incident-intake-58d5bc4889-ktzqv          42m          75Mi            
+incident-intake-58d5bc4889-lpgsq          57m          75Mi            
+incident-intake-58d5bc4889-pvqtg          62m          75Mi            
+quorum-coordinator-f875db486-f8vrs        78m          45Mi            
+quorum-coordinator-f875db486-jkbhd        7m           45Mi            
+quorum-coordinator-f875db486-qqx4m        39m          44Mi            
+quorum-coordinator-f875db486-qthcr        58m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h11m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h11m   v1.36.4-gke.2377000
+
+=== 21:26:52 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 49%/50%                    1         5         5          5h11m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 45%/50%, memory: 35%/80%   1         5         4          5h11m
+incident-intake      5/5   5     5     5h11m
+quorum-coordinator   4/4   4     4     5h11m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          48m          74Mi            
+incident-intake-58d5bc4889-hw49d          47m          76Mi            
+incident-intake-58d5bc4889-ktzqv          49m          75Mi            
+incident-intake-58d5bc4889-lpgsq          59m          75Mi            
+incident-intake-58d5bc4889-pvqtg          62m          76Mi            
+quorum-coordinator-f875db486-f8vrs        77m          45Mi            
+quorum-coordinator-f875db486-jkbhd        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        39m          44Mi            
+quorum-coordinator-f875db486-qthcr        63m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h11m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h11m   v1.36.4-gke.2377000
+
+=== 21:27:15 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 55%/50%                    1         5         5          5h11m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 48%/50%, memory: 35%/80%   1         5         4          5h11m
+incident-intake      5/5   5     5     5h11m
+quorum-coordinator   4/4   4     4     5h11m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          47m          74Mi            
+incident-intake-58d5bc4889-hw49d          48m          76Mi            
+incident-intake-58d5bc4889-ktzqv          51m          75Mi            
+incident-intake-58d5bc4889-lpgsq          67m          75Mi            
+incident-intake-58d5bc4889-pvqtg          60m          75Mi            
+quorum-coordinator-f875db486-f8vrs        74m          45Mi            
+quorum-coordinator-f875db486-jkbhd        6m           45Mi            
+quorum-coordinator-f875db486-qqx4m        36m          44Mi            
+quorum-coordinator-f875db486-qthcr        68m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h12m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h12m   v1.36.4-gke.2377000
+
+=== 21:27:36 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 55%/50%                    1         5         5          5h11m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 48%/50%, memory: 35%/80%   1         5         4          5h11m
+incident-intake      5/5   5     5     5h11m
+quorum-coordinator   4/4   4     4     5h11m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          47m          74Mi            
+incident-intake-58d5bc4889-hw49d          48m          76Mi            
+incident-intake-58d5bc4889-ktzqv          51m          75Mi            
+incident-intake-58d5bc4889-lpgsq          67m          75Mi            
+incident-intake-58d5bc4889-pvqtg          60m          75Mi            
+quorum-coordinator-f875db486-f8vrs        74m          45Mi            
+quorum-coordinator-f875db486-jkbhd        6m           45Mi            
+quorum-coordinator-f875db486-qqx4m        36m          44Mi            
+quorum-coordinator-f875db486-qthcr        68m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h12m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h12m   v1.36.4-gke.2377000
+
+=== 21:27:58 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 55%/50%                    1         5         5          5h12m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 48%/50%, memory: 35%/80%   1         5         4          5h12m
+incident-intake      5/5   5     5     5h12m
+quorum-coordinator   4/4   4     4     5h12m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          50m          74Mi            
+incident-intake-58d5bc4889-hw49d          47m          76Mi            
+incident-intake-58d5bc4889-ktzqv          49m          75Mi            
+incident-intake-58d5bc4889-lpgsq          66m          75Mi            
+incident-intake-58d5bc4889-pvqtg          67m          75Mi            
+quorum-coordinator-f875db486-f8vrs        83m          45Mi            
+quorum-coordinator-f875db486-jkbhd        8m           45Mi            
+quorum-coordinator-f875db486-qqx4m        39m          44Mi            
+quorum-coordinator-f875db486-qthcr        66m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h12m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h12m   v1.36.4-gke.2377000
+
+=== 21:28:20 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 54%/50%                    1         5         5          5h12m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 50%/50%, memory: 35%/80%   1         5         4          5h12m
+incident-intake      5/5   5     5     5h12m
+quorum-coordinator   4/4   4     4     5h12m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          43m          74Mi            
+incident-intake-58d5bc4889-hw49d          49m          76Mi            
+incident-intake-58d5bc4889-ktzqv          51m          75Mi            
+incident-intake-58d5bc4889-lpgsq          63m          75Mi            
+incident-intake-58d5bc4889-pvqtg          65m          75Mi            
+quorum-coordinator-f875db486-f8vrs        81m          45Mi            
+quorum-coordinator-f875db486-jkbhd        15m          45Mi            
+quorum-coordinator-f875db486-qqx4m        41m          44Mi            
+quorum-coordinator-f875db486-qthcr        62m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h13m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h13m   v1.36.4-gke.2377000
+
+=== 21:28:43 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 54%/50%                    1         5         5          5h12m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 50%/50%, memory: 35%/80%   1         5         4          5h12m
+incident-intake      5/5   5     5     5h12m
+quorum-coordinator   4/4   4     4     5h12m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          47m          74Mi            
+incident-intake-58d5bc4889-hw49d          46m          76Mi            
+incident-intake-58d5bc4889-ktzqv          47m          75Mi            
+incident-intake-58d5bc4889-lpgsq          59m          75Mi            
+incident-intake-58d5bc4889-pvqtg          59m          76Mi            
+quorum-coordinator-f875db486-f8vrs        74m          45Mi            
+quorum-coordinator-f875db486-jkbhd        16m          45Mi            
+quorum-coordinator-f875db486-qqx4m        40m          44Mi            
+quorum-coordinator-f875db486-qthcr        63m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h13m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h13m   v1.36.4-gke.2377000
+
+=== 21:29:05 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 54%/50%                    1         5         5          5h13m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 50%/50%, memory: 35%/80%   1         5         4          5h13m
+incident-intake      5/5   5     5     5h13m
+quorum-coordinator   4/4   4     4     5h13m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          47m          74Mi            
+incident-intake-58d5bc4889-hw49d          46m          76Mi            
+incident-intake-58d5bc4889-ktzqv          47m          75Mi            
+incident-intake-58d5bc4889-lpgsq          59m          75Mi            
+incident-intake-58d5bc4889-pvqtg          59m          76Mi            
+quorum-coordinator-f875db486-f8vrs        74m          45Mi            
+quorum-coordinator-f875db486-jkbhd        16m          45Mi            
+quorum-coordinator-f875db486-qqx4m        40m          44Mi            
+quorum-coordinator-f875db486-qthcr        63m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h13m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h13m   v1.36.4-gke.2377000
+
+=== 21:29:28 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 52%/50%                    1         5         5          5h13m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 52%/50%, memory: 35%/80%   1         5         4          5h13m
+incident-intake      5/5   5     5     5h13m
+quorum-coordinator   4/4   4     4     5h13m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          50m          74Mi            
+incident-intake-58d5bc4889-hw49d          50m          76Mi            
+incident-intake-58d5bc4889-ktzqv          40m          75Mi            
+incident-intake-58d5bc4889-lpgsq          67m          75Mi            
+incident-intake-58d5bc4889-pvqtg          57m          75Mi            
+quorum-coordinator-f875db486-f8vrs        89m          45Mi            
+quorum-coordinator-f875db486-jkbhd        15m          45Mi            
+quorum-coordinator-f875db486-qqx4m        39m          44Mi            
+quorum-coordinator-f875db486-qthcr        62m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h14m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h14m   v1.36.4-gke.2377000
+
+=== 21:29:50 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 52%/50%                    1         5         5          5h13m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 52%/50%, memory: 35%/80%   1         5         4          5h13m
+incident-intake      5/5   5     5     5h13m
+quorum-coordinator   4/4   4     4     5h13m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          47m          74Mi            
+incident-intake-58d5bc4889-hw49d          40m          76Mi            
+incident-intake-58d5bc4889-ktzqv          47m          75Mi            
+incident-intake-58d5bc4889-lpgsq          55m          75Mi            
+incident-intake-58d5bc4889-pvqtg          61m          75Mi            
+quorum-coordinator-f875db486-f8vrs        74m          45Mi            
+quorum-coordinator-f875db486-jkbhd        14m          45Mi            
+quorum-coordinator-f875db486-qqx4m        35m          44Mi            
+quorum-coordinator-f875db486-qthcr        60m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h14m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h14m   v1.36.4-gke.2377000
+
+=== 21:30:13 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 38%/50%                    1         5         5          5h14m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 36%/50%, memory: 35%/80%   1         5         4          5h14m
+incident-intake      5/5   5     5     5h14m
+quorum-coordinator   4/4   4     4     5h14m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          33m          74Mi            
+incident-intake-58d5bc4889-hw49d          20m          76Mi            
+incident-intake-58d5bc4889-ktzqv          29m          75Mi            
+incident-intake-58d5bc4889-lpgsq          30m          75Mi            
+incident-intake-58d5bc4889-pvqtg          42m          75Mi            
+quorum-coordinator-f875db486-f8vrs        49m          45Mi            
+quorum-coordinator-f875db486-jkbhd        8m           45Mi            
+quorum-coordinator-f875db486-qqx4m        21m          44Mi            
+quorum-coordinator-f875db486-qthcr        39m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h15m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h15m   v1.36.4-gke.2377000
+
+=== 21:30:36 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 20%/50%                    1         5         5          5h14m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 21%/50%, memory: 35%/80%   1         5         4          5h14m
+incident-intake      5/5   5     5     5h14m
+quorum-coordinator   4/4   4     4     5h14m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          33m          74Mi            
+incident-intake-58d5bc4889-hw49d          20m          76Mi            
+incident-intake-58d5bc4889-ktzqv          29m          75Mi            
+incident-intake-58d5bc4889-lpgsq          30m          75Mi            
+incident-intake-58d5bc4889-pvqtg          42m          75Mi            
+quorum-coordinator-f875db486-f8vrs        49m          45Mi            
+quorum-coordinator-f875db486-jkbhd        8m           45Mi            
+quorum-coordinator-f875db486-qqx4m        21m          44Mi            
+quorum-coordinator-f875db486-qthcr        39m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h15m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h15m   v1.36.4-gke.2377000
+
+=== 21:30:58 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 7%/50%                     1         5         5          5h15m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 10%/50%, memory: 35%/80%   1         5         4          5h15m
+incident-intake      5/5   5     5     5h15m
+quorum-coordinator   4/4   4     4     5h15m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-ftbrs          7m           74Mi            
+incident-intake-58d5bc4889-hw49d          6m           76Mi            
+incident-intake-58d5bc4889-ktzqv          5m           75Mi            
+incident-intake-58d5bc4889-lpgsq          7m           75Mi            
+incident-intake-58d5bc4889-pvqtg          13m          75Mi            
+quorum-coordinator-f875db486-f8vrs        17m          45Mi            
+quorum-coordinator-f875db486-jkbhd        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        6m           44Mi            
+quorum-coordinator-f875db486-qthcr        13m          44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h15m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h15m   v1.36.4-gke.2377000
+
+=== 21:31:21 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 7%/50%                     1         5         5          5h15m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 10%/50%, memory: 35%/80%   1         5         4          5h15m
+incident-intake      4/4   4     4     5h15m
+quorum-coordinator   3/3   3     3     5h15m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          3m           76Mi            
+incident-intake-58d5bc4889-ktzqv          3m           75Mi            
+incident-intake-58d5bc4889-lpgsq          5m           75Mi            
+incident-intake-58d5bc4889-pvqtg          5m           75Mi            
+quorum-coordinator-f875db486-f8vrs        5m           45Mi            
+quorum-coordinator-f875db486-jkbhd        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        4m           44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h16m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h16m   v1.36.4-gke.2377000
+
+=== 21:31:43 ===
+NAME                 REFERENCE                       TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 7%/50%                     1         5         4          5h15m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 10%/50%, memory: 35%/80%   1         5         3          5h15m
+incident-intake      4/4   4     4     5h15m
+quorum-coordinator   3/3   3     3     5h15m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          3m           76Mi            
+incident-intake-58d5bc4889-ktzqv          3m           75Mi            
+incident-intake-58d5bc4889-lpgsq          4m           75Mi            
+incident-intake-58d5bc4889-pvqtg          5m           75Mi            
+quorum-coordinator-f875db486-f8vrs        5m           45Mi            
+quorum-coordinator-f875db486-jkbhd        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        4m           44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h16m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h16m   v1.36.4-gke.2377000
+
+=== 21:32:06 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 3%/50%                    1         5         3          5h16m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 35%/80%   1         5         3          5h16m
+incident-intake      3/3   3     3     5h16m
+quorum-coordinator   2/2   2     2     5h16m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          3m           76Mi            
+incident-intake-58d5bc4889-ktzqv          3m           75Mi            
+incident-intake-58d5bc4889-pvqtg          5m           75Mi            
+quorum-coordinator-f875db486-f8vrs        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        4m           44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h16m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h16m   v1.36.4-gke.2377000
+
+=== 21:32:29 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 3%/50%                    1         5         3          5h16m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 35%/80%   1         5         2          5h16m
+incident-intake      3/3   3     3     5h16m
+quorum-coordinator   2/2   2     2     5h16m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          3m           76Mi            
+incident-intake-58d5bc4889-ktzqv          3m           75Mi            
+incident-intake-58d5bc4889-pvqtg          5m           75Mi            
+quorum-coordinator-f875db486-f8vrs        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        4m           44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h17m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h17m   v1.36.4-gke.2377000
+
+=== 21:32:51 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 4%/50%                    1         5         2          5h16m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 35%/80%   1         5         2          5h16m
+incident-intake      2/2   2     2     5h17m
+quorum-coordinator   2/2   2     2     5h17m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          4m           76Mi            
+incident-intake-58d5bc4889-pvqtg          5m           75Mi            
+quorum-coordinator-f875db486-f8vrs        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        4m           44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h17m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h17m   v1.36.4-gke.2377000
+
+=== 21:33:13 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 4%/50%                    1         5         2          5h17m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 35%/80%   1         5         2          5h17m
+incident-intake      2/2   2     2     5h17m
+quorum-coordinator   2/2   2     2     5h17m
+
+NAME                                      CPU(cores)   MEMORY(bytes)   
+incident-intake-58d5bc4889-hw49d          3m           76Mi            
+incident-intake-58d5bc4889-pvqtg          4m           75Mi            
+quorum-coordinator-f875db486-f8vrs        5m           45Mi            
+quorum-coordinator-f875db486-qqx4m        4m           44Mi            
+gke-s19-gke-primary-e807c11c-pnjm   Ready   <none>   6h18m   v1.36.4-gke.2377000
+gke-s19-gke-primary-e807c11c-rrsq   Ready   <none>   6h18m   v1.36.4-gke.2377000
+
+=== 21:33:36 ===
+NAME                 REFERENCE                       TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
+incident-intake      Deployment/incident-intake      cpu: 4%/50%                    1         5         2          5h17m
+quorum-coordinator   Deployment/quorum-coordinator   cpu: 4%/50%, memory: 35%/80%   1         5         2          5h17m
+incident-intake      1/1   1     1     5h17m
+quorum-coordinator   1/1   1     1     5h17m
