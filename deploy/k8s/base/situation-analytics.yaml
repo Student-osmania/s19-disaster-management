@@ -1,0 +1,57 @@
+# Situation Analytics API (Kafka consumer of Flink results, Firestore)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: situation-analytics
+  labels: {app: situation-analytics, part-of: s19}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels: {app: situation-analytics}
+  template:
+    metadata:
+      labels: {app: situation-analytics, part-of: s19}
+    spec:
+      serviceAccountName: s19-app
+      terminationGracePeriodSeconds: 20
+      securityContext: {runAsNonRoot: true, runAsUser: 10001}
+      containers:
+        - name: app
+          image: s19/situation-analytics
+          imagePullPolicy: IfNotPresent
+          ports:
+            - {name: http, containerPort: 8080}
+          envFrom:
+            - configMapRef: {name: s19-cloud-config}
+            - configMapRef: {name: s19-service-config}
+          env:
+            - name: SERVICE_NAME
+              value: "situation-analytics"
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: 500m, memory: 384Mi}
+          readinessProbe:
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 6
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: false}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: situation-analytics
+  labels: {app: situation-analytics, part-of: s19}
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "s19-healthz"}'
+spec:
+  type: ClusterIP
+  selector: {app: situation-analytics}
+  ports:
+    - {name: http, port: 8080, targetPort: http}

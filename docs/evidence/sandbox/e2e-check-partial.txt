@@ -1,0 +1,66 @@
+# SANDBOX run (no cloud): 3 replica processes + coordinator + intake + registry + dispatch as native processes, real PostgreSQL 16 (pgserver), GCS emulator (gcp-storage-emulator), reverse proxy with the Ingress path routing on :8080. 2026-11-18T08:17:21Z
+# Expected FAILs in this sandbox: Firestore emulator, Kafka broker and Pub/Sub are not available here (blocked downloads), so
+# Volunteer Coordination / Situation Analytics are not running, kafkaEventQueued=false and no alert is published.
+$ BASE_URL=http://127.0.0.1:8080 python scripts/e2e_check.py --alert-timeout 3
+# e2e check against http://127.0.0.1:8080  (2026-11-18T08:17:31+0000)
+
+[PASS] 1. Quorum Coordinator reachable: GET /api/quorum/config -> 200
+       {"status": 200}
+[PASS] 1. Incident Intake reachable: GET /api/incidents/_meta/types -> 200
+       {"status": 200}
+[PASS] 1. Resource Registry (Cloud SQL) reachable: GET /api/resources/stats -> 200
+       {"status": 200}
+[FAIL] 1. Volunteer Coordination (Firestore) reachable: GET /api/volunteers/stats -> 200
+       {"status": 502}
+[PASS] 1. Dispatch (Kafka consumer) reachable: GET /api/dispatch/_meta/consumer -> 200
+       {"status": 200}
+[FAIL] 1. Situation Analytics API reachable: GET /api/analytics/summary -> 200
+       {"status": 502}
+[PASS] 1b. 3 incident-store replicas reachable over gRPC
+       [{"id": "incident-store-0", "reachable": true, "faultMode": "none", "keys": 8}, {"id": "incident-store-1", "reachable": true, "faultMode": "none", "keys": 8}, {"id": "incident-store-2", "reachable": true, "faultMode": "none", "keys": 8}]
+[FAIL] 2. seed 8 volunteers per region (Firestore batch write)
+       {"_raw": "bad gateway: All connection attempts failed"}
+[PASS] 3. POST /api/incidents (HIGH) -> 201 with W=2 quorum acks
+       {"incidentId": "inc-73a24d9c1d8e", "status": "REPORTED", "context": {"intake": 1}, "quorum": {"acks": 2, "w": 2, "n": 3, "replicas": {"incident-store-0": "ok", "incident-store-1": "pending", "incident-store-2": "ok"}}, "kafkaEventQueued": false, "alertPublished": false}
+[FAIL] 3b. INCIDENT_REPORTED event queued to Kafka
+       {"kafkaEventQueued": false}
+[PASS] 3c. quorum read (R=2) returns the incident
+       {"responded": ["incident-store-2", "incident-store-1"], "context": {"intake": 1}}
+[PASS] 3d. PATCH (read-modify-write with vector-clock context) -> VERIFIED
+       {"context": {"intake": 1, "field-officer": 1}}
+[PASS] 3e. GET /api/incidents lists it
+       {"listed": 9}
+[PASS] 4. attachment stored in Cloud Storage (object store)
+       {"incidentId": "inc-73a24d9c1d8e", "uri": "gs://s19-local-raw/attachments/inc-73a24d9c1d8e/1794989851-e2e-photo.txt", "bytes": 36}
+[FAIL] 5. POST /api/dispatch -> 201 (resources reserved in Cloud SQL, volunteers in Firestore)
+       {"status": 201, "resources": ["d4b622ee-3ecc-4115-804b-470e98bbb195", "9e13591a-746b-4e7c-ad13-206d118909b7"], "volunteers": [], "alertPublished": false, "error": null}
+[PASS] 5b. incident is DISPATCHED in the replicated store with the assigned resources
+       {"status": "DISPATCHED"}
+[PASS] 5c. reserved resource is RESERVED in Cloud SQL
+       {"id": "d4b622ee-3ecc-4115-804b-470e98bbb195", "name": "water-kit-west-1", "status": "RESERVED", "version": 2}
+[FAIL] 5d. assigned volunteer is unavailable and linked to the incident
+       "no volunteer was assigned"
+[PASS] 5e. AVAILABLE resources in 'west' dropped by 2
+       {"before": 21, "after": 19}
+[FAIL] 6. Pub/Sub -> serverless Alert Service processed DISPATCH_ASSIGNED
+       {"alertId": null, "channels": null, "delivered": null, "failed": null, "processingMs": null}
+[FAIL] 6b. the assigned volunteer's inbox holds the notification
+       {"inbox": 0}
+[PASS] 7. complete dispatch -> COMPLETED
+       {"id": "8648135b-ea74-450a-b43a-2f059168b2d3", "incident_id": "inc-73a24d9c1d8e", "region": "west", "severity": "HIGH", "resource_ids": ["d4b622ee-3ecc-4115-804b-470e98bbb195", "9e13591a-746b-4e7c-ad13-206d118909b7"], "volunteer_ids": [], "status": "COMPLETED", "mode": "MANUAL", "shortfall": 0, "created_at": "2026-11-18T08:17:31.807999+00:00", "com
+[PASS] 7b. incident RESOLVED
+       {"status": "RESOLVED", "notes": 3}
+[FAIL] 7c. resource and volunteer released
+       {"resource": "AVAILABLE", "volunteerAvailable": null}
+[FAIL] 8. CRITICAL incident -> 201 and alert published to Pub/Sub
+       {"incidentId": "inc-bd050553aa75", "alertPublished": false}
+[FAIL] 8b. Dispatch auto-dispatched it from the Kafka incident-events topic
+       {"id": null, "mode": null, "resource_ids": null, "volunteer_ids": null}
+[FAIL] 8c. Alert Service delivered the CRITICAL alert (inbox + regional broadcast)
+       {"channels": null, "recipientCount": null, "delivered": null, "failed": null}
+[FAIL] 8d. regional broadcast for 'north' is readable
+       {"broadcasts": 0}
+[FAIL] 9. analytics summary aggregates Registry + Volunteers + Coordinator over REST
+       {"coordinatorWrites": null, "pipeline": null}
+
+15/29 checks passed

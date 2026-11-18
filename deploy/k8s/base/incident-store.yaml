@@ -1,0 +1,76 @@
+# Replicated Incident Store: N=3 independent Dynamo-style replicas.
+# Each pod owns its own PersistentVolume (SQLite). There is no leader and replicas never talk to
+# each other - the Quorum Coordinator fans out over gRPC. Stable DNS names come from the headless
+# Service:  incident-store-{0,1,2}.incident-store-headless.s19.svc.cluster.local:50051
+apiVersion: v1
+kind: Service
+metadata:
+  name: incident-store-headless
+  labels: {app: incident-store, part-of: s19}
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector: {app: incident-store}
+  ports:
+    - {name: grpc, port: 50051, targetPort: grpc}
+    - {name: metrics, port: 8080, targetPort: metrics}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: incident-store
+  labels: {app: incident-store, part-of: s19}
+spec:
+  serviceName: incident-store-headless
+  replicas: 3
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels: {app: incident-store}
+  template:
+    metadata:
+      labels: {app: incident-store, part-of: s19}
+    spec:
+      serviceAccountName: s19-app
+      terminationGracePeriodSeconds: 10
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, fsGroup: 10001}
+      affinity:
+        podAntiAffinity:            # spread replicas across nodes (independent failure domains)
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels: {app: incident-store}
+      containers:
+        - name: replica
+          image: s19/incident-store
+          imagePullPolicy: IfNotPresent
+          ports:
+            - {name: grpc, containerPort: 50051}
+            - {name: metrics, containerPort: 8080}
+          env:
+            - name: REPLICA_ID
+              valueFrom:
+                fieldRef: {fieldPath: metadata.name}
+            - {name: DATA_DIR, value: /data}
+            - {name: SERVICE_NAME, value: incident-store}
+          resources:
+            requests: {cpu: 50m, memory: 96Mi}
+            limits: {cpu: 500m, memory: 256Mi}
+          readinessProbe:
+            tcpSocket: {port: grpc}
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: {port: grpc}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          volumeMounts:
+            - {name: data, mountPath: /data}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard-rwo
+        resources:
+          requests: {storage: 1Gi}

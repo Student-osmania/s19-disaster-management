@@ -1,0 +1,9 @@
+# SANDBOX: dispatch rollback when the incident write misses its quorum (real PostgreSQL, real gRPC replicas). 2026-11-18T08:18:26Z
+coordinator config: N=3 W=3 R=2 (W raised to 3 for this test so a read succeeds but the write cannot)
+incident inc-862f984a6022 acks 3
+replica 2 -> down
+POST /api/dispatch -> HTTP 503 | incident update failed (quorum); dispatch rolled back
+replica 2 -> none; anti-entropy: {'incident-store-2': 1}
+incident after recovery (R=3): status REPORTED | assignedResources [] | last note: MANUAL dispatch 77aa893d-16dc-47b6-be12-1ca424219959 rolled back: write quorum lost
+dispatch rows: [('FAILED', 'MANUAL')] | south AVAILABLE before/after: 21 21
+RESULT PASS

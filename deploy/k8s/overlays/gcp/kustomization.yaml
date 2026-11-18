@@ -1,0 +1,29 @@
+# GCP overlay tracked by Argo CD (application s19-services).
+# Image names/tags are rewritten by scripts/set-images.sh (first time) and by CI on every push.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: s19
+resources:
+  - ../../base
+images:
+  - name: s19/incident-intake
+    newName: us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/incident-intake
+    newTag: v1
+  - name: s19/resource-registry
+    newName: us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/resource-registry
+    newTag: v1
+  - name: s19/incident-store
+    newName: us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/incident-store
+    newTag: v1
+  - name: s19/quorum-coordinator
+    newName: us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/quorum-coordinator
+    newTag: v1
+  - name: s19/dispatch
+    newName: us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/dispatch
+    newTag: v1
+  - name: s19/volunteer-coordination
+    newName: us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/volunteer-coordination
+    newTag: v1
+  - name: s19/situation-analytics
+    newName: us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/situation-analytics
+    newTag: v1

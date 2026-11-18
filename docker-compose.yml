@@ -1,0 +1,238 @@
+# LOCAL, zero-cost development stack (Docker Desktop on Windows / macOS / Linux).
+# Real Kafka, real PostgreSQL, the official Google emulators for Firestore and Pub/Sub, fake-gcs-server
+# for Cloud Storage, and all 8 services. NOTHING here touches your GCP project.
+#
+#   docker compose up --build -d                      # core stack (8 services + infrastructure)
+#   docker compose --profile flink up --build -d      # + local Flink 1.17 cluster running the real job
+#   docker compose ps                                 # everything "running" / "healthy"
+#   docker compose down -v                            # stop and delete all local data
+#
+# One public entry point, like the GKE Ingress:  http://localhost:8080/api/...
+# Service names equal the Kubernetes Service names, so the same env defaults work in both places.
+name: s19
+
+x-svc: &svc
+  build:
+    context: .
+    dockerfile: services/Dockerfile
+  restart: unless-stopped
+  environment: &env
+    LOG_LEVEL: INFO
+    GCP_PROJECT_ID: s19-local
+    KAFKA_BOOTSTRAP: kafka:9092
+    COORDINATOR_URL: http://quorum-coordinator:8080
+    REGISTRY_URL: http://resource-registry:8080
+    VOLUNTEER_URL: http://volunteer-coordination:8080
+    RAW_BUCKET: s19-local-raw
+    ALERT_TOPIC: alert-requests
+    DB_HOST: postgres
+    DB_NAME: s19
+    DB_USER: s19app
+    DB_PASSWORD: s19app
+    FIRESTORE_EMULATOR_HOST: firestore:8080
+    PUBSUB_EMULATOR_HOST: pubsub:8085
+    STORAGE_EMULATOR_HOST: http://fake-gcs:4443
+
+services:
+  # ---------------------------------------------------------------- infrastructure
+  kafka:
+    image: apache/kafka:3.8.0
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: INTERNAL://:9092,EXTERNAL://:9094,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 3
+    ports: ["9094:9094"]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+
+  # Creates the four topics exactly like the GKE PostSync job (deploy/platform/kafka/topics-job.yaml)
+  kafka-init:
+    image: apache/kafka:3.8.0
+    depends_on: {kafka: {condition: service_healthy}}
+    restart: "no"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        for spec in incident-events:3 dispatch-events:3 consistency-events:1 incident-aggregates:1; do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic $${spec%%:*} --partitions $${spec##*:} --replication-factor 1
+        done
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list
+
+  postgres:
+    image: postgres:15
+    environment: {POSTGRES_DB: s19, POSTGRES_USER: s19app, POSTGRES_PASSWORD: s19app}
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U s19app -d s19"]
+      interval: 3s
+      retries: 20
+
+  firestore:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud emulators firestore start --host-port=0.0.0.0:8080 --project=s19-local
+    ports: ["8090:8080"]
+
+  pubsub:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud emulators pubsub start --host-port=0.0.0.0:8085 --project=s19-local
+    ports: ["8085:8085"]
+
+  fake-gcs:
+    image: fsouza/fake-gcs-server:1.50.2
+    command: ["-scheme", "http", "-port", "4443", "-public-host", "fake-gcs:4443"]
+    volumes: ["./local/gcs-data:/data"]
+    ports: ["4443:4443"]
+
+  # Creates the Pub/Sub topic + a push subscription that calls the local Alert Service
+  # (on GCP the equivalent is the Eventarc trigger created by Terraform).
+  pubsub-init:
+    image: python:3.12-slim
+    depends_on: [pubsub, alert-service]
+    environment: {PUBSUB_EMULATOR_HOST: "pubsub:8085"}
+    volumes: ["./scripts/local_pubsub_init.py:/init.py:ro"]
+    command: sh -c "pip install -q google-cloud-pubsub==2.44.0 && python /init.py"
+    restart: "no"
+
+  # ---------------------------------------------------------------- the 8 services
+  incident-store-0:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: incident-store}}
+    environment: {<<: *env, REPLICA_ID: incident-store-0}
+    volumes: ["store0:/data"]
+  incident-store-1:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: incident-store}}
+    environment: {<<: *env, REPLICA_ID: incident-store-1}
+    volumes: ["store1:/data"]
+  incident-store-2:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: incident-store}}
+    environment: {<<: *env, REPLICA_ID: incident-store-2}
+    volumes: ["store2:/data"]
+
+  quorum-coordinator:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: quorum-coordinator}}
+    environment:
+      <<: *env
+      REPLICAS: incident-store-0=incident-store-0:50051,incident-store-1=incident-store-1:50051,incident-store-2=incident-store-2:50051
+      WRITE_QUORUM: "2"
+      READ_QUORUM: "2"
+      ANTI_ENTROPY_INTERVAL_S: "30"
+      ADMIN_TOKEN: local-admin-token
+    depends_on: [incident-store-0, incident-store-1, incident-store-2, kafka]
+    ports: ["8003:8080"]
+
+  incident-intake:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: incident-intake}}
+    depends_on: [quorum-coordinator, fake-gcs, pubsub, kafka]
+    ports: ["8001:8080"]
+
+  resource-registry:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: resource-registry}}
+    depends_on: {postgres: {condition: service_healthy}}
+    ports: ["8002:8080"]
+
+  dispatch:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: dispatch}}
+    depends_on: {postgres: {condition: service_healthy}, resource-registry: {condition: service_started},
+                 kafka-init: {condition: service_completed_successfully}}
+    ports: ["8005:8080"]
+
+  volunteer-coordination:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: volunteer-coordination}}
+    depends_on: [firestore]
+    ports: ["8006:8080"]
+
+  situation-analytics:
+    <<: *svc
+    build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: situation-analytics}}
+    depends_on: {firestore: {condition: service_started}, kafka-init: {condition: service_completed_successfully}}
+    ports: ["8008:8080"]
+
+  # Serverless Alert Service, run locally with the Functions Framework (same code as on Cloud Run functions)
+  alert-service:
+    image: python:3.12-slim
+    working_dir: /fn
+    volumes: ["./services/alert-function:/fn:ro"]
+    environment:
+      GCP_PROJECT_ID: s19-local
+      FIRESTORE_EMULATOR_HOST: "firestore:8080"
+      ALERT_WEBHOOK_URL: "${ALERT_WEBHOOK_URL:-}"     # optional, e.g. https://ntfy.sh/<your-topic>
+    command: sh -c "pip install -q -r requirements.txt && functions-framework --target=handle_alert --signature-type=cloudevent --port=8080"
+    depends_on: [firestore]
+    ports: ["8007:8080"]
+
+  # Single public entry point (same paths as the GKE Ingress)
+  gateway:
+    image: nginx:1.27-alpine
+    volumes: ["./local/nginx.conf:/etc/nginx/nginx.conf:ro"]
+    depends_on: [incident-intake, resource-registry, dispatch, volunteer-coordination, situation-analytics,
+                 quorum-coordinator]
+    ports: ["8080:8080"]
+
+  # ---------------------------------------------------------------- local Flink (profile: flink)
+  # 1) build the job jar with Maven inside Docker (no Java/Maven needed on Windows)
+  flink-jar-builder:
+    profiles: ["flink"]
+    image: maven:3.9.9-eclipse-temurin-11
+    working_dir: /w
+    volumes: ["./flink/situation-analytics-flink:/w", "m2-cache:/root/.m2"]
+    command: mvn -q -B -DskipTests package
+    restart: "no"
+  # 2) a JobManager + TaskManager (same Flink minor version as Dataproc 2.2: 1.17)
+  flink-jobmanager:
+    profiles: ["flink"]
+    image: flink:1.17.2-java11
+    command: jobmanager
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flink-jobmanager"
+    volumes: ["./flink/situation-analytics-flink/target:/jobs:ro"]
+    ports: ["8081:8081"]
+  flink-taskmanager:
+    profiles: ["flink"]
+    image: flink:1.17.2-java11
+    command: taskmanager
+    depends_on: [flink-jobmanager]
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flink-jobmanager\ntaskmanager.numberOfTaskSlots: 2"
+  # 3) submit the job (detached) once the jar exists and Kafka topics are there
+  flink-job-submit:
+    profiles: ["flink"]
+    image: flink:1.17.2-java11
+    depends_on:
+      flink-jar-builder: {condition: service_completed_successfully}
+      kafka-init: {condition: service_completed_successfully}
+      flink-taskmanager: {condition: service_started}
+    volumes: ["./flink/situation-analytics-flink/target:/jobs:ro"]
+    restart: "no"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        for i in $$(seq 1 60); do (echo > /dev/tcp/flink-jobmanager/8081) 2>/dev/null && break; echo "waiting for jobmanager"; sleep 2; done
+        flink run -d -m flink-jobmanager:8081 /jobs/situation-analytics-flink-1.0.0.jar \
+          --bootstrap kafka:9092 --checkpoint-dir jobmanager --starting-offsets earliest --window-seconds 60
+
+volumes:
+  store0: {}
+  store1: {}
+  store2: {}
+  m2-cache: {}

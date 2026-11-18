@@ -1,0 +1,24 @@
+# SANDBOX: SituationPipeline (the job's processing logic) on a real local Flink 1.17.2 MiniCluster.
+# Compiled with javac --release 11 against the Flink 1.17.2 jars from PyPI apache-flink-libraries (Maven Central is blocked in this sandbox).
+# Only change for this sandbox build: the Jackson import points at Flink's bundled (shaded) Jackson copy instead of com.fasterxml (same API).
+# SituationAnalyticsJob.java (Kafka source/sink wiring) was NOT compiled here: the Kafka connector jar was unavailable. 2026-11-18T08:19:09Z
+$ java -cp <flink-1.17.2 lib>:<classes> com.s19.analytics.PipelineScenario
+RESULT {"region":"north","windowStart":1700000040000,"windowEnd":1700000100000,"incidents":2,"critical":1,"updates":0,"uniqueReporters":1,"dispatches":1,"resourcesDispatched":3,"volunteersDispatched":5,"resolved":0,"conflicts":1,"readRepairs":2,"quorumFailures":0,"antiEntropyRepairs":0,"prevIncidents":0,"baseline":0.0,"surge":false,"emittedAt":1794989955408}
+RESULT {"region":"south","windowStart":1700000040000,"windowEnd":1700000100000,"incidents":1,"critical":0,"updates":0,"uniqueReporters":1,"dispatches":0,"resourcesDispatched":0,"volunteersDispatched":0,"resolved":0,"conflicts":0,"readRepairs":0,"quorumFailures":0,"antiEntropyRepairs":0,"prevIncidents":0,"baseline":0.0,"surge":false,"emittedAt":1794989955434}
+RESULT {"region":"north","windowStart":1700000100000,"windowEnd":1700000160000,"incidents":6,"critical":0,"updates":0,"uniqueReporters":6,"dispatches":0,"resourcesDispatched":0,"volunteersDispatched":0,"resolved":0,"conflicts":0,"readRepairs":0,"quorumFailures":1,"antiEntropyRepairs":0,"prevIncidents":2,"baseline":2.0,"surge":true,"emittedAt":1794989955434}
+RESULT {"region":"global","windowStart":1700000100000,"windowEnd":1700000160000,"incidents":0,"critical":0,"updates":0,"uniqueReporters":0,"dispatches":0,"resourcesDispatched":0,"volunteersDispatched":0,"resolved":0,"conflicts":0,"readRepairs":0,"quorumFailures":0,"antiEntropyRepairs":4,"prevIncidents":0,"baseline":0.0,"surge":false,"emittedAt":1794989955434}
+[PASS] 4 window results (north A, north B, south A, global B), got 4
+[PASS] north window A has 1-minute bounds
+[PASS] north A: 2 incidents, 1 critical
+[PASS] north A: 1 unique reporter (r1 twice)
+[PASS] north A: dispatch demand 3 resources / 5 volunteers
+[PASS] north A: 1 conflict, 2 read repairs (incl. the out-of-order event)
+[PASS] north A: no surge (2 < surgeMin 5)
+[PASS] north B: 6 incidents from 6 unique reporters
+[PASS] north B: keyed state carried previous window (prev=2, baseline=2.0)
+[PASS] north B: SURGE detected (6 >= 5 and 6 >= 2 x 2)
+[PASS] north B: 1 quorum failure
+[PASS] south A: 1 incident
+[PASS] global B: 4 anti-entropy repairs
+ALL FLINK PIPELINE CHECKS PASSED
+exit code: 0

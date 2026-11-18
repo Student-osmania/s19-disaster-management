@@ -1,0 +1,17 @@
+# Copy to terraform.tfvars and edit. terraform.tfvars is git-ignored.
+project_id  = "s19-disaster-123456"
+github_repo = "your-github-user/s19-disaster-management"
+
+# Cost switches (see docs/COST_PLAN.md)
+gke_enabled      = true
+cloudsql_running = true
+dataproc_enabled = false # flip to true only for Flink work / demo
+use_spot_nodes   = true  # set false the day of the demo
+
+# Optional budget alert (find it with: gcloud billing accounts list)
+# billing_account_id = "XXXXXX-XXXXXX-XXXXXX"
+# budget_amount_usd  = 25
+
+# Optional: the serverless Alert Service also POSTs every CRITICAL/HIGH alert to this HTTPS webhook
+# (Slack/Discord incoming webhook, or a free https://ntfy.sh/<random-topic-name> you open in a browser)
+# alert_webhook_url = "https://ntfy.sh/s19-alerts-change-me-123"

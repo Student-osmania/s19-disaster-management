@@ -1,0 +1,68 @@
+# CI: test -> build 7 images -> push to Artifact Registry (keyless, Workload Identity Federation)
+#     -> bump image tags in deploy/k8s/overlays/gcp -> commit. Argo CD then rolls the change out.
+# CI never touches the cluster (no kubectl): Git is the only deployment interface (GitOps).
+#
+# Repository variables to create (Settings > Secrets and variables > Actions > Variables):
+#   GCP_PROJECT_ID     e.g. s19-disaster-123456
+#   GCP_REGION         us-central1
+#   GCP_WIF_PROVIDER   terraform output github_wif_provider   (projects/.../providers/github-oidc)
+#   GCP_CI_SA          terraform output github_ci_service_account
+name: ci
+on:
+  push:
+    branches: [main]
+    paths: ["services/**", "proto/**", "scripts/gen_proto.py", "tests/**", ".github/workflows/ci.yml"]
+  pull_request:
+    paths: ["services/**", "proto/**", "tests/**"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r services/requirements.txt pytest==9.2.0
+      - run: python scripts/gen_proto.py && python -m pytest -q tests/
+
+  build-push:
+    # skipped (not failed) until the four repository variables below exist
+    if: github.event_name != 'pull_request' && vars.GCP_PROJECT_ID != ''
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/s19
+    steps:
+      - uses: actions/checkout@v4
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_CI_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+      - name: Build and push (shared dependency layer is cached between services)
+        run: |
+          TAG=${GITHUB_SHA::7}
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          for s in incident-store quorum-coordinator incident-intake resource-registry dispatch volunteer-coordination situation-analytics; do
+            docker build -f services/Dockerfile --build-arg SERVICE=$s -t $REGISTRY/$s:$TAG .
+            docker push $REGISTRY/$s:$TAG
+          done
+      - name: Bump GitOps overlay
+        run: |
+          bash scripts/set-image-tag.sh "$TAG"
+          git config user.name "s19-ci"
+          git config user.email "s19-ci@users.noreply.github.com"
+          git add deploy/k8s/overlays/gcp/kustomization.yaml
+          git commit -m "deploy: images $TAG [skip ci]" || echo "nothing to commit"
+          git push

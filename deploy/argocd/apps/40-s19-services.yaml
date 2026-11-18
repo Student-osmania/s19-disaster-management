@@ -1,0 +1,34 @@
+# The 7 containerised S19 microservices (the 8th, Alert Service, is serverless - Terraform)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: s19-services
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers: [resources-finalizer.argocd.argoproj.io]
+spec:
+  project: default
+  source:
+    repoURL: REPLACE_GIT_REPO_URL
+    targetRevision: main
+    path: deploy/k8s/overlays/gcp
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: s19
+  # HPA owns spec.replicas of these Deployments - never treat it as drift
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: incident-intake
+      jsonPointers: [/spec/replicas]
+    - group: apps
+      kind: Deployment
+      name: quorum-coordinator
+      jsonPointers: [/spec/replicas]
+  syncPolicy:
+    automated: {prune: true, selfHeal: true}
+    syncOptions: [RespectIgnoreDifferences=true]
+    retry:
+      limit: 10
+      backoff: {duration: 15s, factor: 2, maxDuration: 5m}

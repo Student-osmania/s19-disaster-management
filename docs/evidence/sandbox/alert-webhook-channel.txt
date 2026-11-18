@@ -1,0 +1,6 @@
+# SANDBOX: the real Alert Service code (services/alert-function/main.py) - webhook channel against a live local HTTP endpoint and an unreachable one; channel selection. Firestore channels need the emulator (not available here). 2026-11-18T08:18:59Z
+channels CRITICAL: ['inbox', 'broadcast', 'webhook'] | HIGH: ['inbox', 'webhook'] | LOW: ['inbox']
+webhook to a live endpoint -> DELIVERED | received body: {'text': '[CRITICAL] dam breach', 'content': '[CRITICAL] dam breach', 'alertId': 'msg-1', 'alertType': 'CRITICAL_INCIDENT', 'incidentId': 'inc-test', 'region': 'north', 'severity': 'CRITICAL'}
+webhook to an unreachable endpoint -> FAILED | <urlopen error [Errno 111] Connection refused>
+channels CRITICAL without ALERT_WEBHOOK_URL: ['inbox', 'broadcast']
+RESULT PASS

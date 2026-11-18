@@ -1,0 +1,30 @@
+# Argo CD PostSync hook: idempotently creates the four topics used by the system.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-create-topics
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 12
+  template:
+    spec:
+      restartPolicy: OnFailure
+      enableServiceLinks: false
+      containers:
+        - name: create-topics
+          image: apache/kafka:3.8.0
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -e
+              BS=kafka.kafka.svc.cluster.local:9092
+              for i in $(seq 1 30); do /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server $BS >/dev/null 2>&1 && break; echo "waiting for broker"; sleep 5; done
+              for spec in incident-events:3 dispatch-events:3 consistency-events:1 incident-aggregates:1; do
+                t=${spec%%:*}; p=${spec##*:}
+                /opt/kafka/bin/kafka-topics.sh --bootstrap-server $BS --create --if-not-exists --topic $t --partitions $p --replication-factor 1
+              done
+              /opt/kafka/bin/kafka-topics.sh --bootstrap-server $BS --list
+          resources:
+            requests: {cpu: 50m, memory: 256Mi}

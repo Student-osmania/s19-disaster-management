@@ -1,0 +1,120 @@
+== deploy/k8s/overlays/gcp (tracked by Argo CD app s19-services)
+  [PASS] s19: ConfigMap/s19-service-config valid against Kubernetes 1.33.0 schema
+  [PASS] s19: CRD BackendConfig/s19-healthz has apiVersion/kind/metadata/spec
+  [PASS] s19: PodDisruptionBudget/incident-store valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Service/incident-store-headless valid against Kubernetes 1.33.0 schema
+  [PASS] s19: StatefulSet/incident-store valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Deployment/quorum-coordinator valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Service/quorum-coordinator valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Deployment/incident-intake valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Service/incident-intake valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Deployment/resource-registry valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Service/resource-registry valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Deployment/dispatch valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Service/dispatch valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Deployment/volunteer-coordination valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Service/volunteer-coordination valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Deployment/situation-analytics valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Service/situation-analytics valid against Kubernetes 1.33.0 schema
+  [PASS] s19: HorizontalPodAutoscaler/incident-intake valid against Kubernetes 1.33.0 schema
+  [PASS] s19: HorizontalPodAutoscaler/quorum-coordinator valid against Kubernetes 1.33.0 schema
+  [PASS] s19: Ingress/s19-public valid against Kubernetes 1.33.0 schema
+  [PASS] s19: CRD ServiceMonitor/s19-services has apiVersion/kind/metadata/spec
+  [PASS] 7 containerised services rendered: ['dispatch', 'incident-intake', 'incident-store', 'quorum-coordinator', 'resource-registry', 'situation-analytics', 'volunteer-coordination']
+  [PASS] every object lands in namespace s19
+  [PASS] quorum-coordinator: selector matches pod labels
+  [PASS] quorum-coordinator: image rewritten by overlay -> us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/quorum-coordinator:v1
+  [PASS] quorum-coordinator: envFrom ConfigMap s19-cloud-config exists in Git or is created by Terraform 02-platform
+  [PASS] quorum-coordinator: envFrom ConfigMap s19-service-config exists in Git or is created by Terraform 02-platform
+  [PASS] quorum-coordinator: secret s19-secrets/ADMIN_TOKEN is created by Terraform 02-platform
+  [PASS] quorum-coordinator: runs as Workload-Identity KSA s19-app
+  [PASS] incident-intake: selector matches pod labels
+  [PASS] incident-intake: image rewritten by overlay -> us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/incident-intake:v1
+  [PASS] incident-intake: envFrom ConfigMap s19-cloud-config exists in Git or is created by Terraform 02-platform
+  [PASS] incident-intake: envFrom ConfigMap s19-service-config exists in Git or is created by Terraform 02-platform
+  [PASS] incident-intake: runs as Workload-Identity KSA s19-app
+  [PASS] resource-registry: selector matches pod labels
+  [PASS] resource-registry: image rewritten by overlay -> us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/resource-registry:v1
+  [PASS] resource-registry: envFrom ConfigMap s19-cloud-config exists in Git or is created by Terraform 02-platform
+  [PASS] resource-registry: envFrom ConfigMap s19-service-config exists in Git or is created by Terraform 02-platform
+  [PASS] resource-registry: secret s19-secrets/DB_PASSWORD is created by Terraform 02-platform
+  [PASS] resource-registry: runs as Workload-Identity KSA s19-app
+  [PASS] dispatch: selector matches pod labels
+  [PASS] dispatch: image rewritten by overlay -> us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/dispatch:v1
+  [PASS] dispatch: envFrom ConfigMap s19-cloud-config exists in Git or is created by Terraform 02-platform
+  [PASS] dispatch: envFrom ConfigMap s19-service-config exists in Git or is created by Terraform 02-platform
+  [PASS] dispatch: secret s19-secrets/DB_PASSWORD is created by Terraform 02-platform
+  [PASS] dispatch: runs as Workload-Identity KSA s19-app
+  [PASS] volunteer-coordination: selector matches pod labels
+  [PASS] volunteer-coordination: image rewritten by overlay -> us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/volunteer-coordination:v1
+  [PASS] volunteer-coordination: envFrom ConfigMap s19-cloud-config exists in Git or is created by Terraform 02-platform
+  [PASS] volunteer-coordination: envFrom ConfigMap s19-service-config exists in Git or is created by Terraform 02-platform
+  [PASS] volunteer-coordination: runs as Workload-Identity KSA s19-app
+  [PASS] situation-analytics: selector matches pod labels
+  [PASS] situation-analytics: image rewritten by overlay -> us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/situation-analytics:v1
+  [PASS] situation-analytics: envFrom ConfigMap s19-cloud-config exists in Git or is created by Terraform 02-platform
+  [PASS] situation-analytics: envFrom ConfigMap s19-service-config exists in Git or is created by Terraform 02-platform
+  [PASS] situation-analytics: runs as Workload-Identity KSA s19-app
+  [PASS] incident-store: selector matches pod labels
+  [PASS] incident-store: image rewritten by overlay -> us-central1-docker.pkg.dev/REPLACE_PROJECT_ID/s19/incident-store:v1
+  [PASS] incident-store: runs as Workload-Identity KSA s19-app
+  [PASS] Service incident-store-headless selects exactly one workload
+  [PASS] Service incident-store-headless: targetPorts ['grpc', 'metrics'] exist on the pod
+  [PASS] Service quorum-coordinator selects exactly one workload
+  [PASS] Service quorum-coordinator: targetPorts ['http'] exist on the pod
+  [PASS] Service incident-intake selects exactly one workload
+  [PASS] Service incident-intake: targetPorts ['http'] exist on the pod
+  [PASS] Service resource-registry selects exactly one workload
+  [PASS] Service resource-registry: targetPorts ['http'] exist on the pod
+  [PASS] Service dispatch selects exactly one workload
+  [PASS] Service dispatch: targetPorts ['http'] exist on the pod
+  [PASS] Service volunteer-coordination selects exactly one workload
+  [PASS] Service volunteer-coordination: targetPorts ['http'] exist on the pod
+  [PASS] Service situation-analytics selects exactly one workload
+  [PASS] Service situation-analytics: targetPorts ['http'] exist on the pod
+  [PASS] HPA incident-intake targets Deployment incident-intake (which leaves spec.replicas to the HPA)
+  [PASS] HPA incident-intake scales on CPU/memory
+  [PASS] HPA incident-intake: target pods declare CPU+memory requests (required for Utilization)
+  [PASS] HPA quorum-coordinator targets Deployment quorum-coordinator (which leaves spec.replicas to the HPA)
+  [PASS] HPA quorum-coordinator scales on CPU/memory
+  [PASS] HPA quorum-coordinator: target pods declare CPU+memory requests (required for Utilization)
+  [PASS] at least two HPAs
+  [PASS] Ingress /api/incidents -> incident-intake:8080 exists
+  [PASS] Ingress /api/resources -> resource-registry:8080 exists
+  [PASS] Ingress /api/dispatch -> dispatch:8080 exists
+  [PASS] Ingress /api/volunteers -> volunteer-coordination:8080 exists
+  [PASS] Ingress /api/analytics -> situation-analytics:8080 exists
+  [PASS] Ingress /api/quorum -> quorum-coordinator:8080 exists
+  [PASS] Ingress uses the static IP reserved by Terraform (s19-ingress-ip)
+  [PASS] ServiceMonitor ports exist on Services
+  [PASS] PDB keeps 2/3 replicas (W=2/R=2) during voluntary disruptions
+  [PASS] Service quorum-coordinator: BackendConfig exists
+  [PASS] Service incident-intake: BackendConfig exists
+  [PASS] Service resource-registry: BackendConfig exists
+  [PASS] Service dispatch: BackendConfig exists
+  [PASS] Service volunteer-coordination: BackendConfig exists
+  [PASS] Service situation-analytics: BackendConfig exists
+== deploy/platform/kafka
+  [PASS] kafka: Service/kafka-headless valid against Kubernetes 1.33.0 schema
+  [PASS] kafka: Service/kafka valid against Kubernetes 1.33.0 schema
+  [PASS] kafka: Service/kafka-external valid against Kubernetes 1.33.0 schema
+  [PASS] kafka: StatefulSet/kafka valid against Kubernetes 1.33.0 schema
+  [PASS] kafka: Job/kafka-create-topics valid against Kubernetes 1.33.0 schema
+  [PASS] Kafka EXTERNAL advertised listener == internal LB IP (Dataproc reachability)
+== deploy/platform/monitoring/extras
+  [PASS] monitoring: CRD PrometheusRule/s19-recording-rules has apiVersion/kind/metadata/spec
+  [PASS] monitoring: ConfigMap/s19-grafana-dashboard valid against Kubernetes 1.33.0 schema
+  [PASS] dashboard ConfigMap carries the Grafana sidecar label
+  [PASS] dashboard JSON parses
+== deploy/argocd/apps
+  [PASS] 10-kafka.yaml: path deploy/platform/kafka exists in the repo
+  [PASS] 10-kafka.yaml: automated sync with selfHeal (GitOps)
+  [PASS] 20-monitoring.yaml: values file from Git ($values)
+  [PASS] 20-monitoring.yaml: automated sync with selfHeal (GitOps)
+  [PASS] 30-monitoring-extras.yaml: path deploy/platform/monitoring/extras exists in the repo
+  [PASS] 30-monitoring-extras.yaml: automated sync with selfHeal (GitOps)
+  [PASS] 40-s19-services.yaml: path deploy/k8s/overlays/gcp exists in the repo
+  [PASS] 40-s19-services.yaml: automated sync with selfHeal (GitOps)
+  [PASS] monitoring Helm values file deploy/platform/monitoring/values.yaml exists
+
+ALL MANIFEST CHECKS PASSED

@@ -1,0 +1,14 @@
+# Prometheus Operator scrapes /metrics of every s19 Service (port "http" or "metrics").
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: s19-services
+  labels: {part-of: s19}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  selector:
+    matchLabels: {part-of: s19}
+  endpoints:
+    - {port: http, path: /metrics, interval: 15s}
+    - {port: metrics, path: /metrics, interval: 15s}

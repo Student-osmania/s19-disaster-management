@@ -1,0 +1,32 @@
+# Public web entry point (the assignment's "web service accessible over public URL").
+# GKE provisions a global external Application Load Balancer on the static IP s19-ingress-ip
+# reserved by Terraform.  URL:  http://<ingress_ip>/api/...
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: s19-public
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "s19-ingress-ip"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api/incidents
+            pathType: Prefix
+            backend: {service: {name: incident-intake, port: {number: 8080}}}
+          - path: /api/resources
+            pathType: Prefix
+            backend: {service: {name: resource-registry, port: {number: 8080}}}
+          - path: /api/dispatch
+            pathType: Prefix
+            backend: {service: {name: dispatch, port: {number: 8080}}}
+          - path: /api/volunteers
+            pathType: Prefix
+            backend: {service: {name: volunteer-coordination, port: {number: 8080}}}
+          - path: /api/analytics
+            pathType: Prefix
+            backend: {service: {name: situation-analytics, port: {number: 8080}}}
+          - path: /api/quorum
+            pathType: Prefix
+            backend: {service: {name: quorum-coordinator, port: {number: 8080}}}

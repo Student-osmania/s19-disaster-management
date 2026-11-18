@@ -1,0 +1,75 @@
+# Static checks - run 2026-11-18T08:16:51Z on the final code (sandbox: Linux, Python 3.12.3, Node 22, OpenJDK 21)
+
+$ python scripts/gen_proto.py
+generated stubs in /home/claude/work/s19-disaster-management/services/common/s19common/pb
+
+$ python -m py_compile <all .py>
+OK: 26 files compiled
+
+$ pyflakes services scripts tests
+OK: no warnings
+
+$ bash -n scripts/*.sh infra/terraform/01-foundation/files/*.sh
+OK scripts/build_push.sh
+OK scripts/configure.sh
+OK scripts/gen_proto.sh
+OK scripts/record_hpa.sh
+OK scripts/set-image-tag.sh
+OK scripts/submit_flink_job.sh
+OK scripts/teardown_k8s.sh
+OK infra/terraform/01-foundation/files/init-flink-prometheus.sh
+
+$ node --check loadtest/k6/*.js (as ES modules)
+OK loadtest/k6/hpa-load.js
+OK loadtest/k6/smoke.js
+
+$ yamllint (relaxed, max line 200) on deploy/ infra/ .github/ docker-compose.yml
+errors: 0
+
+$ docker compose config --quiet  /  docker compose --profile flink config --quiet
+OK: both compose configurations are valid (22 services)
+
+$ python: parse flink pom.xml + Grafana dashboard JSON
+OK: pom.xml well-formed; dashboard 'S19 Disaster Management - Overview' 38 panels
+
+$ tree-sitter PowerShell grammar (syntax only; pwsh itself is not available here) on scripts/*.ps1
+OK   scripts/build_flink_jar.ps1
+OK   scripts/build_push.ps1
+OK   scripts/configure.ps1
+OK   scripts/env.ps1
+OK   scripts/record_hpa.ps1
+OK   scripts/set-image-tag.ps1
+OK   scripts/submit_flink_job.ps1
+OK   scripts/teardown_k8s.ps1
+
+$ dashboard metric names vs. code (metrics followed by { or [)
+  OK  analytics_last_window_incidents
+  OK  analytics_surges_total
+  OK  analytics_window_lag_seconds
+  OK  anti_entropy_keys_repaired_total
+  OK  container_cpu_usage_seconds_total
+  OK  container_memory_working_set_bytes
+  OK  flink_jobmanager_job_uptime
+  OK  flink_taskmanager_job_task_operator_s19EventsParsed
+  OK  flink_taskmanager_job_task_operator_s19ParseErrors
+  OK  http_request_duration_seconds_bucket
+  OK  http_requests_total
+  OK  kube_horizontalpodautoscaler_status_current_replicas
+  OK  kube_horizontalpodautoscaler_status_desired_replicas
+  OK  kube_node_status_condition
+  OK  kube_pod_container_status_restarts_total
+  OK  kube_pod_status_phase
+  OK  kube_pod_status_ready
+  OK  node_cpu_seconds_total
+  OK  quorum_conflicts_total
+  OK  quorum_operation_duration_seconds_bucket
+  OK  quorum_operations_total
+  OK  quorum_read_repairs_total
+  OK  quorum_replica_errors_total
+  OK  quorum_replica_up
+  OK  quorum_stale_responses_total
+  OK  quorum_write_acks_count
+  OK  quorum_write_acks_sum
+  OK  replica_fault_mode
+  OK  replica_keys
+all dashboard metrics accounted for

@@ -1,0 +1,4 @@
+# SANDBOX: functions-framework 3.10.2 (same version as the Alert Service) receiving a Pub/Sub *push* body, as the local Pub/Sub emulator sends it. Target = a probe function that prints the CloudEvent it receives. 2026-11-18T08:18:47Z
+POST / {"message":{"data":"<base64>","messageId":"123456"},"subscription":"projects/s19-local/subscriptions/alert-service-push"}
+HTTP 200
+GOT {"id": "123456", "type": "google.cloud.pubsub.topic.v1.messagePublished", "messageId": "123456", "payload": {"alertType": "CRITICAL_INCIDENT", "severity": "CRITICAL", "region": "north"}}

@@ -1,0 +1,6 @@
+# SANDBOX: Resource Registry on real PostgreSQL 16 - optimistic locking and FOR UPDATE SKIP LOCKED under concurrency. 2026-11-18T08:18:43Z
+create: 201 1b92c3e7-519c-40fa-9ebd-61778ccd9d78 AVAILABLE version 1
+optimistic locking: PATCH v1 -> 200 MAINTENANCE | second PATCH with stale v1 -> 409 resource not found or version conflict (re-read and retry)
+concurrency: 12 parallel reserve calls x 3 against 22 AVAILABLE -> reserved 22, duplicates 0, all HTTP 200: True
+after releasing all: AVAILABLE = 22
+RESULT PASS

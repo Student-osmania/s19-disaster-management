@@ -1,0 +1,10 @@
+# SANDBOX run (no cloud): 3 replica processes + coordinator + intake + registry + dispatch as native processes, real PostgreSQL 16 (pgserver), GCS emulator (gcp-storage-emulator), reverse proxy with the Ingress path routing on :8080. 2026-11-18T08:17:21Z
+# Real crash: SIGKILL of the incident-store-2 process, 5 writes, restart from its SQLite file, anti-entropy.
+replica-2 pid 1931
+replicas after kill: [('incident-store-0', True), ('incident-store-1', True), ('incident-store-2', False)]
+5 writes accepted with 2/3 acks: ['inc-dd131a93ff9c', 'inc-af9b07abac4f', 'inc-5281ff4aa712', 'inc-7105f158f503', 'inc-bcf51ac3c2f0']
+replicas after restart: [('incident-store-0', True, 8), ('incident-store-1', True, 8), ('incident-store-2', True, 3)]
+keys missing on restarted replica before anti-entropy: 5
+anti-entropy: {"status": "ok", "reachable": ["incident-store-0", "incident-store-1", "incident-store-2"], "differingBuckets": 5, "keysChecked": 5, "repaired": {"incident-store-2": 5}, "durationMs": 53, "at": 1794989851484}
+keys missing after anti-entropy: 0
+RESULT PASS

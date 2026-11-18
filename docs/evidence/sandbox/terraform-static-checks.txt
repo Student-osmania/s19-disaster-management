@@ -1,0 +1,34 @@
+== 00-bootstrap
+  [PASS] main.tf parses
+  [PASS] variables used ['project_id', 'region'] all declared
+  [PASS] 2 resource references resolve
+  [PASS] 0 data-source references resolve
+  [PASS] locals used [] declared
+== 01-foundation
+  [PASS] apis.tf parses
+  [PASS] cloudsql.tf parses
+  [PASS] data_stores.tf parses
+  [PASS] dataproc.tf parses
+  [PASS] function.tf parses
+  [PASS] gke.tf parses
+  [PASS] iam.tf parses
+  [PASS] network.tf parses
+  [PASS] outputs.tf parses
+  [PASS] variables.tf parses
+  [PASS] versions.tf parses
+  [PASS] variables used ['alert_webhook_url', 'billing_account_id', 'budget_amount_usd', 'cloudsql_running', 'dataproc_enabled', 'dataproc_idle_ttl', 'dataproc_machine_type', 'firestore_location', 'flink_prometheus_jar', 'github_repo', 'gke_enabled', 'gke_machine_type', 'gke_max_nodes', 'gke_min_nodes', 'kafka_ilb_ip', 'project_id', 'region', 'use_spot_nodes', 'zone'] all declared
+  [PASS] 32 resource references resolve
+  [PASS] 3 data-source references resolve
+  [PASS] locals used ['apis', 'project_roles', 'sa_emails'] declared
+  [PASS] path files/init-flink-prometheus.sh exists
+  [PASS] function source_dir ../../../services/alert-function exists
+== 02-platform
+  [PASS] main.tf parses
+  [PASS] variables used ['git_repo_url', 'git_revision', 'git_token', 'project_id', 'tfstate_bucket'] all declared
+  [PASS] 10 resource references resolve
+  [PASS] 3 data-source references resolve
+  [PASS] locals used ['f'] declared
+  [PASS] path argocd-values.yaml exists
+  [PASS] 02-platform reads foundation outputs ['alert_topic', 'cloudsql_db_name', 'cloudsql_password', 'cloudsql_private_ip', 'cloudsql_user', 'data_bucket', 'dataproc_master_ip', 'firestore_database', 'gke_cluster_name', 'region', 'workload_gsa_email', 'zone'] - all declared
+
+ALL TERRAFORM STATIC CHECKS PASSED

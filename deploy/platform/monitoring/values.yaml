@@ -1,0 +1,63 @@
+# kube-prometheus-stack values (chart 87.19.2) - Prometheus + Grafana + kube-state-metrics + node-exporter.
+# Sized for a small cluster; no LoadBalancer (use kubectl port-forward) and no persistent disks (cost).
+crds:
+  enabled: true
+alertmanager:
+  enabled: false
+# GKE manages the control plane - these targets are not scrapeable
+kubeEtcd: {enabled: false}
+kubeControllerManager: {enabled: false}
+kubeScheduler: {enabled: false}
+kubeProxy: {enabled: false}
+
+prometheusOperator:
+  resources:
+    requests: {cpu: 50m, memory: 96Mi}
+    limits: {memory: 256Mi}
+
+prometheus:
+  prometheusSpec:
+    scrapeInterval: 15s
+    evaluationInterval: 30s
+    retention: 3d
+    # pick up ServiceMonitors/PodMonitors/Rules from every namespace, not only this Helm release
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    resources:
+      requests: {cpu: 100m, memory: 400Mi}
+      limits: {memory: 1200Mi}
+    # Flink JobManager/TaskManager reporters on the Dataproc VM (Service+Endpoints created by Terraform)
+    additionalScrapeConfigs:
+      - job_name: flink
+        scrape_interval: 15s
+        static_configs:
+          - targets:
+              - flink-metrics.monitoring.svc.cluster.local:9250
+              - flink-metrics.monitoring.svc.cluster.local:9251
+            labels: {cluster: s19-flink}
+
+grafana:
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+  persistence: {enabled: false}
+  resources:
+    requests: {cpu: 50m, memory: 128Mi}
+    limits: {memory: 384Mi}
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: ALL
+  defaultDashboardsTimezone: browser
+
+kube-state-metrics:
+  resources:
+    requests: {cpu: 20m, memory: 64Mi}
+
+prometheus-node-exporter:
+  resources:
+    requests: {cpu: 20m, memory: 32Mi}

@@ -1,0 +1,62 @@
+# Resource Registry (Cloud SQL)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-registry
+  labels: {app: resource-registry, part-of: s19}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels: {app: resource-registry}
+  template:
+    metadata:
+      labels: {app: resource-registry, part-of: s19}
+    spec:
+      serviceAccountName: s19-app
+      terminationGracePeriodSeconds: 20
+      securityContext: {runAsNonRoot: true, runAsUser: 10001}
+      containers:
+        - name: app
+          image: s19/resource-registry
+          imagePullPolicy: IfNotPresent
+          ports:
+            - {name: http, containerPort: 8080}
+          envFrom:
+            - configMapRef: {name: s19-cloud-config}
+            - configMapRef: {name: s19-service-config}
+          env:
+            - name: SERVICE_NAME
+              value: "resource-registry"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef: {name: s19-secrets, key: DB_PASSWORD}
+            - name: DB_POOL_MAX
+              value: "5"
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: 500m, memory: 384Mi}
+          readinessProbe:
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 6
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: false}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: resource-registry
+  labels: {app: resource-registry, part-of: s19}
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "s19-healthz"}'
+spec:
+  type: ClusterIP
+  selector: {app: resource-registry}
+  ports:
+    - {name: http, port: 8080, targetPort: http}

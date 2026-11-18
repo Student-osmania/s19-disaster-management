@@ -1,0 +1,10 @@
+$ python -m pytest -v tests/
+tests/test_dynamo.py::test_vclock_compare PASSED                         [ 12%]
+tests/test_dynamo.py::test_semantic_merge PASSED                         [ 25%]
+tests/test_dynamo.py::test_quorum_write_read PASSED                      [ 37%]
+tests/test_dynamo.py::test_write_survives_one_replica_down_and_recovery PASSED [ 50%]
+tests/test_dynamo.py::test_quorum_failure_when_two_down PASSED           [ 62%]
+tests/test_dynamo.py::test_read_repair_after_dropped_write PASSED        [ 75%]
+tests/test_dynamo.py::test_concurrent_writes_create_siblings_then_merge PASSED [ 87%]
+tests/test_dynamo.py::test_slow_replica_does_not_block_quorum PASSED     [100%]
+============================== 8 passed in 4.68s ===============================

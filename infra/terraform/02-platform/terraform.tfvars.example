@@ -1,0 +1,5 @@
+project_id     = "s19-disaster-123456"
+tfstate_bucket = "s19-disaster-123456-s19-tfstate"
+git_repo_url   = "https://github.com/your-github-user/s19-disaster-management.git"
+git_revision   = "main"
+# git_token    = "github_pat_..."   # only if the repository is private

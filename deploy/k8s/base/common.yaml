@@ -1,0 +1,39 @@
+# Non-secret configuration that is safe to keep in Git.
+# Cloud-specific values (project, bucket, DB IP...) live in ConfigMap s19-cloud-config,
+# secrets in Secret s19-secrets - both created by Terraform (infra/terraform/02-platform).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: s19-service-config
+  labels: {part-of: s19}
+data:
+  LOG_LEVEL: INFO
+  COORDINATOR_URL: http://quorum-coordinator:8080
+  REGISTRY_URL: http://resource-registry:8080
+  VOLUNTEER_URL: http://volunteer-coordination:8080
+---
+# Health check used by the GKE Ingress (Google Cloud external Application Load Balancer)
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: s19-healthz
+spec:
+  timeoutSec: 30
+  healthCheck:
+    type: HTTP
+    requestPath: /healthz
+    port: 8080
+    checkIntervalSec: 15
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+---
+# Keep at least 2 of 3 replicas up during voluntary disruptions (node upgrades) => W=2/R=2 stay available
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: incident-store
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels: {app: incident-store}

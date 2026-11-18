@@ -1,0 +1,9 @@
+# Keep Linux line endings for everything that runs inside containers / CI, even when the repo is
+# cloned on Windows with core.autocrlf=true (a CRLF in a .sh file breaks the Docker build).
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.jar binary
+*.png binary
+*.jpg binary
+*.zip binary
