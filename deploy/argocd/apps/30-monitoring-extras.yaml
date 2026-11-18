@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: REPLACE_GIT_REPO_URL
+    repoURL: https://github.com/Student-osmania/s19-disaster-management.git
     targetRevision: main
     path: deploy/platform/monitoring/extras
   destination:

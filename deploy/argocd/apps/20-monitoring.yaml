@@ -17,7 +17,7 @@ spec:
         releaseName: kps
         valueFiles:
           - $values/deploy/platform/monitoring/values.yaml
-    - repoURL: REPLACE_GIT_REPO_URL
+    - repoURL: https://github.com/Student-osmania/s19-disaster-management.git
       targetRevision: main
       ref: values
   destination:
