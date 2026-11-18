@@ -8,22 +8,22 @@ resources:
 images:
   - name: s19/incident-intake
     newName: us-central1-docker.pkg.dev/s19-disaster-471203/s19/incident-intake
-    newTag: b4eff89
+    newTag: d1aad59
   - name: s19/resource-registry
     newName: us-central1-docker.pkg.dev/s19-disaster-471203/s19/resource-registry
-    newTag: b4eff89
+    newTag: d1aad59
   - name: s19/incident-store
     newName: us-central1-docker.pkg.dev/s19-disaster-471203/s19/incident-store
-    newTag: b4eff89
+    newTag: d1aad59
   - name: s19/quorum-coordinator
     newName: us-central1-docker.pkg.dev/s19-disaster-471203/s19/quorum-coordinator
-    newTag: b4eff89
+    newTag: d1aad59
   - name: s19/dispatch
     newName: us-central1-docker.pkg.dev/s19-disaster-471203/s19/dispatch
-    newTag: b4eff89
+    newTag: d1aad59
   - name: s19/volunteer-coordination
     newName: us-central1-docker.pkg.dev/s19-disaster-471203/s19/volunteer-coordination
-    newTag: b4eff89
+    newTag: d1aad59
   - name: s19/situation-analytics
     newName: us-central1-docker.pkg.dev/s19-disaster-471203/s19/situation-analytics
-    newTag: b4eff89
+    newTag: d1aad59
