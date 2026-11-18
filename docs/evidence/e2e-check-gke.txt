@@ -1,0 +1,62 @@
+# e2e check against http://136.82.51.163  (2026-11-18T22:21:46+0530)
+
+[PASS] 1. Quorum Coordinator reachable: GET /api/quorum/config -> 200
+       {"status": 200}
+[PASS] 1. Incident Intake reachable: GET /api/incidents/_meta/types -> 200
+       {"status": 200}
+[PASS] 1. Resource Registry (Cloud SQL) reachable: GET /api/resources/stats -> 200
+       {"status": 200}
+[PASS] 1. Volunteer Coordination (Firestore) reachable: GET /api/volunteers/stats -> 200
+       {"status": 200}
+[PASS] 1. Dispatch (Kafka consumer) reachable: GET /api/dispatch/_meta/consumer -> 200
+       {"status": 200}
+[PASS] 1. Situation Analytics API reachable: GET /api/analytics/summary -> 200
+       {"status": 200}
+[PASS] 1b. 3 incident-store replicas reachable over gRPC
+       [{"id": "incident-store-0", "reachable": true, "faultMode": "none", "keys": 0}, {"id": "incident-store-1", "reachable": true, "faultMode": "none", "keys": 0}, {"id": "incident-store-2", "reachable": true, "faultMode": "none", "keys": 0}]
+[PASS] 2. seed 8 volunteers per region (Firestore batch write)
+       {"seeded": 40}
+[PASS] 3. POST /api/incidents (HIGH) -> 201 with W=2 quorum acks
+       {"incidentId": "inc-206648a67677", "status": "REPORTED", "context": {"intake": 1}, "quorum": {"acks": 2, "w": 2, "n": 3, "replicas": {"incident-store-0": "pending", "incident-store-1": "ok", "incident-store-2": "ok"}}, "kafkaEventQueued": true, "alertPublished": false}
+[PASS] 3b. INCIDENT_REPORTED event queued to Kafka
+       {"kafkaEventQueued": true}
+[PASS] 3c. quorum read (R=2) returns the incident
+       {"responded": ["incident-store-0", "incident-store-1", "incident-store-2"], "context": {"intake": 1}}
+[PASS] 3d. PATCH (read-modify-write with vector-clock context) -> VERIFIED
+       {"context": {"intake": 1, "field-officer": 1}}
+[PASS] 3e. GET /api/incidents lists it
+       {"listed": 1}
+[PASS] 4. attachment stored in Cloud Storage (object store)
+       {"incidentId": "inc-206648a67677", "uri": "gs://s19-disaster-471203-s19-data/attachments/inc-206648a67677/1795020717-e2e-photo.txt", "bytes": 36}
+[PASS] 5. POST /api/dispatch -> 201 (resources reserved in Cloud SQL, volunteers in Firestore)
+       {"status": 201, "resources": ["7acbd619-636c-4f1f-8ff7-8068cd49e1a0", "6ee09f45-4e3b-42b8-adce-f9d40da5577e"], "volunteers": ["vol-seed-west-0", "vol-seed-west-1", "vol-seed-west-2"], "alertPublished": true, "error": null}
+[PASS] 5b. incident is DISPATCHED in the replicated store with the assigned resources
+       {"status": "DISPATCHED"}
+[PASS] 5c. reserved resource is RESERVED in Cloud SQL
+       {"id": "7acbd619-636c-4f1f-8ff7-8068cd49e1a0", "name": "water-kit-west-1", "status": "RESERVED", "version": 2}
+[PASS] 5d. assigned volunteer is unavailable and linked to the incident
+       {"id": "vol-seed-west-0", "available": false, "currentIncident": "inc-206648a67677"}
+[PASS] 5e. AVAILABLE resources in 'west' dropped by 2
+       {"before": 21, "after": 19}
+[PASS] 6. Pub/Sub -> serverless Alert Service processed DISPATCH_ASSIGNED
+       {"alertId": "23402750104928507", "channels": ["inbox"], "delivered": 3, "failed": 0, "processingMs": 205}
+[PASS] 6b. the assigned volunteer's inbox holds the notification
+       {"inbox": 1}
+[PASS] 7. complete dispatch -> COMPLETED
+       {"id": "01f4f80d-cb73-4920-b527-35e75f47fa36", "incident_id": "inc-206648a67677", "region": "west", "severity": "HIGH", "resource_ids": ["7acbd619-636c-4f1f-8ff7-8068cd49e1a0", "6ee09f45-4e3b-42b8-adce-f9d40da5577e"], "volunteer_ids": ["vol-seed-west-0", "vol-seed-west-1", "vol-seed-west-2"], "status": "COMPLETED", "mode": "MANUAL", "shortfall": 0,
+[PASS] 7b. incident RESOLVED
+       {"status": "RESOLVED", "notes": 3}
+[PASS] 7c. resource and volunteer released
+       {"resource": "AVAILABLE", "volunteerAvailable": true}
+[PASS] 8. CRITICAL incident -> 201 and alert published to Pub/Sub
+       {"incidentId": "inc-ab370ac95a85", "alertPublished": true}
+[PASS] 8b. Dispatch auto-dispatched it from the Kafka incident-events topic
+       {"id": "4f3860f0-6a3d-4d9e-be64-0ec450064bd9", "mode": "AUTO", "resource_ids": ["dbdb6f16-f7d4-4e76-b378-997947a18a01", "c3f422d8-692e-429e-aa13-1ddf2b1e2e45", "93b8cbcd-7730-44e0-9d39-dea2e2af104e"], "volunteer_ids": ["vol-seed-north-0", "vol-seed-north-1", "vol-seed-north-2", "vol-seed-north-3", "vol-seed-north-4"]}
+[PASS] 8c. Alert Service delivered the CRITICAL alert (inbox + regional broadcast)
+       {"channels": ["inbox", "broadcast"], "recipientCount": 3, "delivered": 4, "failed": 0}
+[PASS] 8d. regional broadcast for 'north' is readable
+       {"broadcasts": 1}
+[PASS] 9. analytics summary aggregates Registry + Volunteers + Coordinator over REST
+       {"coordinatorWrites": 7, "pipeline": {"consumerProcessed": 0, "consumerLastError": null, "lastWindowEnd": 0}}
+
+29/29 checks passed
