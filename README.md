@@ -391,7 +391,7 @@ This runs **all 8 services** plus Kafka, PostgreSQL, the Firestore and Pub/Sub e
    ✔ Container s19-incident-store-0-1        Started
    ...
    ✔ Container s19-gateway-1                 Started
-   ✔ Container s19-pubsub-init-1             Started
+   ✔ Container s19-pubsub-init-1             Healthy
   ```
 - **Next:** 5.2.
 
@@ -417,14 +417,15 @@ This runs **all 8 services** plus Kafka, PostgreSQL, the Firestore and Pub/Sub e
   incident-store-2         running   Up 2 minutes
   kafka                    running   Up 2 minutes (healthy)
   postgres                 running   Up 2 minutes (healthy)
-  pubsub                   running   Up 2 minutes
+  pubsub                   running   Up 2 minutes (healthy)
+  pubsub-init              running   Up 2 minutes (healthy)
   quorum-coordinator       running   Up 2 minutes
   resource-registry        running   Up 2 minutes
   situation-analytics      running   Up 2 minutes
   volunteer-coordination   running   Up 2 minutes
   ```
-  and in the logs: `pubsub emulator initialised: projects/s19-local/topics/alert-requests -> ...` and the four topics `consistency-events`, `dispatch-events`, `incident-aggregates`, `incident-events`.
-- **Check:** no service in state `restarting` or `exited` (the two `*-init` containers exit by design once done and are not listed by `ps`).
+  and in the logs: `pubsub emulator initialised: projects/s19-local/topics/alert-requests -> projects/s19-local/subscriptions/alert-service-push -> http://alert-service:8080/ (created: topic, subscription)` and the four topics `consistency-events`, `dispatch-events`, `incident-aggregates`, `incident-events`.
+- **Check:** no service in state `restarting` or `exited`, and `pubsub` + `pubsub-init` show `(healthy)`. `kafka-init` exits by design once the topics exist and is not listed by `ps`. `pubsub-init` keeps running: the Pub/Sub emulator holds topics in memory only, so it re-creates the topic and the push subscription whenever the emulator restarts.
 - **If it fails:** `docker compose logs <service> --tail 50` shows why. Typical first-run cause: `resource-registry`/`dispatch` started before Postgres was ready → `docker compose restart resource-registry dispatch`. Port already in use (`bind: address already in use` for 8080/5432/9094) → stop the program using it, or change the left side of `ports:` in `docker-compose.yml`.
 - **Next:** 5.3.
 
@@ -481,7 +482,7 @@ This runs **all 8 services** plus Kafka, PostgreSQL, the Firestore and Pub/Sub e
   ```
 - **Check:** the last line says `29/29 checks passed`. Each `[PASS]`/`[FAIL]` line is followed by the evidence it looked at.
 - **If it fails:** the evidence line says what was seen. Common local causes:
-  - `6.` / `8c.` alert checks fail → `docker compose logs alert-service pubsub-init`; if `pubsub-init` could not create the subscription, `docker compose up -d pubsub-init` re-runs it.
+  - `3.`/`5.` show `"alertPublished": false` and `6.`/`8.`/`8c.` fail → the Pub/Sub topic is missing: `docker compose ps pubsub pubsub-init` (both must be `healthy`) and `docker compose logs pubsub-init --tail 20`. `docker compose logs incident-intake | Select-String "pubsub publish failed"` shows the publish error.
   - `8b.` auto-dispatch fails → `docker compose logs dispatch | Select-String kafka`; Kafka may still be starting — rerun the script.
   - `1. Volunteer Coordination` 500 → the Firestore emulator is still starting (it takes ~30 s); retry.
 - **Next:** 5.5.

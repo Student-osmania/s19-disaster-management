@@ -88,8 +88,16 @@ services:
 
   pubsub:
     image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
-    command: gcloud emulators pubsub start --host-port=0.0.0.0:8085 --project=s19-local
+    # Pub/Sub has no GA "gcloud emulators" command (only firestore and spanner): it must be "gcloud beta ..."
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085 --project=s19-local
     ports: ["8085:8085"]
+    restart: unless-stopped
+    healthcheck:                       # healthy once the emulator accepts connections on 8085
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/8085"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 15s
 
   fake-gcs:
     image: fsouza/fake-gcs-server:1.50.2
@@ -97,15 +105,28 @@ services:
     volumes: ["./local/gcs-data:/data"]
     ports: ["4443:4443"]
 
-  # Creates the Pub/Sub topic + a push subscription that calls the local Alert Service
-  # (on GCP the equivalent is the Eventarc trigger created by Terraform).
+  # Keeps the Pub/Sub topic + the push subscription to the local Alert Service present
+  # (on GCP the equivalent is the Eventarc trigger created by Terraform). The emulator holds them in
+  # memory only, so this runs as a reconciler that re-creates them after any emulator restart; it is
+  # "healthy" only while both exist, and the publishers (Intake, Dispatch) wait for that.
   pubsub-init:
     image: python:3.12-slim
-    depends_on: [pubsub, alert-service]
-    environment: {PUBSUB_EMULATOR_HOST: "pubsub:8085"}
+    depends_on:
+      pubsub: {condition: service_healthy, restart: true}
+    environment:
+      PUBSUB_EMULATOR_HOST: "pubsub:8085"
+      GCP_PROJECT_ID: s19-local
+      ALERT_TOPIC: alert-requests
+      PUSH_ENDPOINT: "http://alert-service:8080/"
     volumes: ["./scripts/local_pubsub_init.py:/init.py:ro"]
-    command: sh -c "pip install -q google-cloud-pubsub==2.44.0 && python /init.py"
-    restart: "no"
+    command: sh -c "pip install -q --root-user-action=ignore google-cloud-pubsub==2.44.0 && exec python -u /init.py"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/pubsub-ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
 
   # ---------------------------------------------------------------- the 8 services
   incident-store-0:
@@ -140,7 +161,8 @@ services:
   incident-intake:
     <<: *svc
     build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: incident-intake}}
-    depends_on: [quorum-coordinator, fake-gcs, pubsub, kafka]
+    depends_on: {quorum-coordinator: {condition: service_started}, fake-gcs: {condition: service_started},
+                 kafka: {condition: service_started}, pubsub-init: {condition: service_healthy}}
     ports: ["8001:8080"]
 
   resource-registry:
@@ -153,7 +175,8 @@ services:
     <<: *svc
     build: {context: ., dockerfile: services/Dockerfile, args: {SERVICE: dispatch}}
     depends_on: {postgres: {condition: service_healthy}, resource-registry: {condition: service_started},
-                 kafka-init: {condition: service_completed_successfully}}
+                 kafka-init: {condition: service_completed_successfully},
+                 pubsub-init: {condition: service_healthy}}
     ports: ["8005:8080"]
 
   volunteer-coordination:
