@@ -1,32 +1,71 @@
 CS/SS G527 Cloud Computing - Assignment
 Scenario: S19 Disaster Management | Concept: Leaderless Replication (Dynamo-like storage) | Cloud: GCP
 
-Each member owns 2 requirements (a-h) and 2 microservices, and demonstrates them.
+Each member owns assigned requirements and microservices and is responsible for implementation, testing, and demonstration.
 
 ID No.           Name                 Requirements                           Microservices
 ---------------  -------------------  -------------------------------------  ------------------------------------------------
-<ID NUMBER 1>    <NAME 1>             (f) Distributed-systems concept         Replicated Incident Store, Quorum Coordinator
-                                      (c) GKE, HPA and load testing
-<ID NUMBER 2>    <NAME 2>             (b) Serverless + REST/gRPC/MQ          Incident Intake Service, Alert Service (serverless)
-                                      (g) Three storage products
-<ID NUMBER 3>    <NAME 3>             (a) Infrastructure as Code (Terraform)  Resource Registry, Dispatch Service
-                                      (d) GitOps with Argo CD
-<ID NUMBER 4>    <NAME 4>             (e) Apache Flink on Dataproc            Volunteer Coordination Service,
-                                      (h) Observability (Prometheus,          Situation Analytics Service (Flink job + API)
+2025H1030057P    Tejas Mahajan        (f) Distributed-systems concept         Replicated Incident Store, Quorum Coordinator,
+                                      (c) GKE, HPA and load testing             Incident Intake Service
+
+2025H1030053P    Yash Kothari         (b) Serverless + REST/gRPC/MQ          Alert Service (serverless), Resource Registry,
+                                      (g) Three storage products                Dispatch Service
+
+2025H1030048P    J.Sri Chakri         (a) Infrastructure as Code (Terraform)  Volunteer Coordination Service,
+                                      (d) GitOps with Argo CD                    Situation Analytics Service (Flink job + API)
+                                      (e) Apache Flink on Dataproc
+                                      (h) Observability (Prometheus,
                                           Grafana, Cloud Logging)
+
 
 Detailed task list
 ------------------
-Member 1: proto/incident_store.proto; services/incident-store; services/quorum-coordinator (vector clocks, quorum,
-          read repair, anti-entropy, conflict merge, fault injection); tests/test_dynamo.py; scripts/consistency_test.py;
-          deploy/k8s/base/{incident-store,quorum-coordinator,hpa}.yaml; loadtest/k6/*; HPA evidence.
-Member 2: services/incident-intake; services/alert-function (inbox/broadcast/webhook delivery); infra/terraform/01-foundation/function.tf;
-          Pub/Sub + Kafka producer integration; GCS raw archive + attachments; storage section of the design doc.
-Member 3: infra/terraform/** (00-bootstrap, 01-foundation network/iam/gke/cloudsql, 02-platform);
-          services/resource-registry + migrations; services/dispatch + migrations; deploy/argocd/**;
-          .github/workflows/ci.yml; scripts/{configure,build_push,set-image-tag,teardown_k8s}.{ps1,sh};
-          dispatch compensation (rollback on quorum loss).
-Member 4: services/volunteer-coordination; services/situation-analytics; flink/situation-analytics-flink;
-          infra/terraform/01-foundation/dataproc.tf; scripts/{submit_flink_job,build_flink_jar}.ps1; deploy/platform/monitoring/**
-          (values, dashboard, rules); Cloud Logging queries.
-Shared:   docs/DESIGN.md, docs/DEMO_GUIDE.md, docker-compose.yml, scripts/e2e_check.py, end-to-end testing.
+
+Member 1:
+    proto/incident_store.proto;
+    services/incident-store;
+    services/quorum-coordinator (vector clocks, quorum reads/writes, read repair,
+    anti-entropy, conflict merge, fault injection);
+    services/incident-intake;
+    tests/test_dynamo.py;
+    scripts/consistency_test.py;
+    deploy/k8s/base/{incident-store,quorum-coordinator,hpa}.yaml;
+    loadtest/k6/*;
+    GKE deployment, HPA configuration and load-testing evidence.
+
+Member 2:
+    services/alert-function (inbox/broadcast/webhook delivery);
+    services/resource-registry + migrations;
+    services/dispatch + migrations;
+    infra/terraform/01-foundation/function.tf;
+    Pub/Sub + Kafka producer integration;
+    GCS raw archive + attachments;
+    Cloud SQL integration;
+    Firestore integration;
+    dispatch compensation (rollback on quorum loss);
+    storage section of the design document;
+    serverless function deployment and testing.
+
+Member 3:
+    infra/terraform/** (00-bootstrap, 01-foundation network/IAM/GKE/Cloud SQL/Dataproc, 02-platform);
+    services/volunteer-coordination;
+    services/situation-analytics;
+    flink/situation-analytics-flink;
+    deploy/argocd/**;
+    .github/workflows/ci.yml;
+    scripts/{configure,build_push,set-image-tag,teardown_k8s}.{ps1,sh};
+    scripts/{submit_flink_job,build_flink_jar}.ps1;
+    deploy/platform/monitoring/** (values, dashboards, rules);
+    Flink Kafka consumption, stateful time-window aggregation and publishing results to Kafka;
+    Prometheus/Grafana dashboard setup;
+    Cloud Logging queries and observability evidence;
+    Terraform infrastructure provisioning and GitOps deployment.
+
+Shared responsibilities:
+    docs/DESIGN.md - all members contribute their respective architecture and implementation sections;
+    docs/DEMO_GUIDE.md - all members contribute demonstration instructions;
+    docker-compose.yml - Member 3 coordinates; all members integrate their services;
+    scripts/e2e_check.py - all members contribute and validate their service integrations;
+    End-to-end testing - all members;
+    Integration testing and debugging - all members;
+    Final presentation and demonstration - each member demonstrates their assigned requirements and microservices.
