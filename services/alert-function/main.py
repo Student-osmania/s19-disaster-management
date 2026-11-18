@@ -148,7 +148,7 @@ def process_alert(message_id: str, alert: dict) -> dict:
     }
     ref.set(record)
     jlog("INFO", "alert processed", messageId=message_id, incidentId=alert.get("incidentId"),
-         delivered=record["delivered"], failed=record["failed"], severity=severity)
+         delivered=record["delivered"], failed=record["failed"], alertSeverity=severity)
     return record
 
 
